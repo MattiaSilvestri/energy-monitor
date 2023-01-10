@@ -6,3 +6,10 @@ Il mio commit c'è!
 Modifica mattia.
 
 Un'altra modifica mia.
+
+- python
+- few inputs from user (e.g. location)
+- get energy consumption
+- get CPU usage
+- estimate the emissions
+- simple graphical interface/output (PyQt?)
