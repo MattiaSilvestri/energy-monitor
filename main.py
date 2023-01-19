@@ -13,6 +13,6 @@ html = driver.page_source
 
 # Find carbon intensity data on left panel
 soup = BeautifulSoup(html, "html.parser")
-carbon_intensity_square = soup.find_all("span", class_="carbonintensitysquare__Value-llslJL hNchmo")
+carbon_intensity_square = soup.find_all("p", attrs={"data-test-id": "co2-square-value"})
 carbon_intensity_value = carbon_intensity_square[0].text
-print("Italy Carbon Intensity: {0}g (gCO₂eq/kWh)".format(carbon_intensity_value))
+print("Italy Carbon Intensity: {0} (gCO₂eq/kWh)".format(carbon_intensity_value))
