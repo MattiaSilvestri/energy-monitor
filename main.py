@@ -7,9 +7,6 @@ from selenium.common import exceptions
 # Define url of interest (Italy)
 url_electricity_map = "https://app.electricitymaps.com/zone/IT?aggregated=true"
 
-# Set driver of Chrome (requires version > 9.0)
-WINDOW_SIZE = "1920,1080"
-
 def browser_setup(browser_name):
     '''Inizialize webdriver paramiters for a specific browser
 
@@ -25,6 +22,7 @@ def browser_setup(browser_name):
 
     '''
     if browser_name == 'Chrome':
+        # Set driver of Chrome (requires version > 9.0)
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")
         options.add_argument("--window-size=%s" % WINDOW_SIZE)
