@@ -39,7 +39,7 @@ def browser_setup(browser_name):
     return driver
 
 
-# Try with Chrome, if fails try with Firefox
+# Try with Chrome, if it fails try with Firefox
 for b in ['Chrome', 'Firefox']:
     no_browser = False
     try:
@@ -61,4 +61,4 @@ for b in ['Chrome', 'Firefox']:
         break
 
 if no_browser == True:
-    print('Google Chrome or Firefox not found, plese install either of them')
+    print('Google Chrome or Firefox not found, please install either of them')
