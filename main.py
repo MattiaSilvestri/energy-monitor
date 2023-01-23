@@ -39,6 +39,7 @@ def browser_setup(browser_name):
     return driver
 
 
+# Try with Chrome, if fails try with Firefox
 for b in ['Chrome', 'Firefox']:
     no_browser = False
     try:
