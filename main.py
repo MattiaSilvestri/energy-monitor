@@ -24,11 +24,14 @@ def browser_setup(browser_name):
     if browser_name == 'Chrome':
         # Set driver of Chrome (requires version > 9.0)
         options = webdriver.ChromeOptions()
+        # Disable popup
         options.add_argument("--headless")
         options.add_argument("--window-size=%s" % WINDOW_SIZE)
         driver = webdriver.Chrome(options=options)
     elif browser_name == 'Firefox':
+        # Set driver for Firefox
         options = webdriver.FirefoxOptions()
+        #Disable popup
         options.add_argument("--headless")
         options.add_argument("--window-size=%s" % WINDOW_SIZE)
         driver = webdriver.Firefox(options=options)
