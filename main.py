@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common import exceptions
 
-# trallalla
+# trallalla la pappa al pomodoro
 # Define url of interest (Italy)
 url_electricity_map = "https://app.electricitymaps.com/zone/IT?aggregated=true"
 
