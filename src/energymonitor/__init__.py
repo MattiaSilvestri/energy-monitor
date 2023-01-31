@@ -1,1 +1,2 @@
 from energymonitor.scraping import browser_setup
+from energymonitor.scraping import get_carbon_intensity

@@ -1,7 +1,6 @@
 import time
-from bs4 import BeautifulSoup
 from selenium.common import exceptions
-from energymonitor import browser_setup
+import energymonitor
 
 # Define url of interest (Italy)
 url_electricity_map = "https://app.electricitymaps.com/zone/IT?aggregated=true"
@@ -11,16 +10,15 @@ for b in ['Chrome', 'Firefox']:
     no_browser = False
     try:
         print('Trying acces with ', b)
-        driver = browser_setup(b)
+        driver = energymonitor.browser_setup(b)
         driver.get(url_electricity_map)
         time.sleep(3) #give time for dynamic text to load
         html = driver.page_source
         driver.quit()
         # Find carbon intensity data on left panel
-        soup = BeautifulSoup(html, "html.parser")
-        carbon_intensity_square = soup.find_all("p", attrs={"data-test-id": "co2-square-value"})
-        carbon_intensity_value = carbon_intensity_square[0].text
+        carbon_intensity_value = energymonitor.get_carbon_intensity(html)
         print("Italy Carbon Intensity: {0} (gCO₂eq/kWh)".format(carbon_intensity_value))
+        print(type(html))
     except exceptions.WebDriverException:
         no_browser = True
         continue
