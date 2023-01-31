@@ -1,0 +1,1 @@
+from energymonitor.scraping import browser_setup
