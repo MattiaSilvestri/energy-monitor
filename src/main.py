@@ -4,6 +4,7 @@ import energymonitor
 country_code = "IT"
 
 
+<<<<<<< HEAD
 # Retrieve data from Co2Signal API
 print('\nRetrieving Co2Signal data...')
 co2data = energymonitor.get_request_co2signal(country_code)
@@ -19,3 +20,7 @@ print('\nRetrieving CPU data...')
 cpu_info = energymonitor.get_cpu_info()
 cpu_usage = energymonitor.get_cpu_usage(10) #it seems too low to be true!
 print("- Current CPU: {0} \n- CPU usage during last 10s: {1}%".format(cpu_info, cpu_usage))
+=======
+if no_browser == True:
+    raise(energymonitor.exceptions.BrowserNotFound)
+>>>>>>> 544e0bc (Add BrowserNotFound exception.)
