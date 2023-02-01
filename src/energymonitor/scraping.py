@@ -1,41 +1,22 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 
-
-def browser_setup(browser_name):
+def chrome_browser_setup():
     """
     Inizialize webdriver paramiters for a specific browser
 
-    Parameters
-    ----------
-    browser_name: string
-        Name of the browser, either 'Chrome' or 'Firefox'.
-
-    Returns
-    -------
-    driver: selenium.webdriver
-        webdriver object with paramenters for the chosen browser.
+    :return: Webdriver object with paramenters for the chosen browser.
+    :rtype: selenium.webdriver
     """
 
-    if browser_name == 'Chrome':
-        # Set driver of Chrome (requires version > 9.0)
-        options = webdriver.ChromeOptions()
-        # Specify verbosity level 0:info, 1:warnings, 2:error, 3:fatal
-        options.add_argument('log-level=1')
-        # import chrome driver
-        from webdriver_manager.chrome import ChromeDriverManager
-        # Disable popup
-        options.add_argument("--headless")
-        driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-    elif browser_name == 'Firefox':
-        # todo: this is currently not working on mac
-        # Set driver for Firefox
-        options = webdriver.FirefoxOptions()
-        # import firefox driver
-        from webdriver_manager.firefox import GeckoDriverManager
-        # Disable popup
-        options.add_argument("--headless")
-        driver = webdriver.Firefox(GeckoDriverManager().install(), options=options)
+    # Set driver of Chrome (requires version > 9.0)
+    options = webdriver.ChromeOptions()
+    # Specify verbosity level 0:info, 1:warnings, 2:error, 3:fatal
+    options.add_argument('log-level=1')    
+    # Disable popup
+    options.add_argument("--headless")
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
     return driver
 
