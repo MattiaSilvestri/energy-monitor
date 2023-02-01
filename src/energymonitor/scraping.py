@@ -20,6 +20,8 @@ def browser_setup(browser_name):
     if browser_name == 'Chrome':
         # Set driver of Chrome (requires version > 9.0)
         options = webdriver.ChromeOptions()
+        # Specify verbosity level 0:info, 1:warnings, 2:error, 3:fatal
+        options.add_argument('log-level=1')
         # import chrome driver
         from webdriver_manager.chrome import ChromeDriverManager
         # Disable popup
