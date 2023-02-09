@@ -17,6 +17,7 @@ try:
     # Find carbon intensity data on left panel
     carbon_intensity_value = energymonitor.get_carbon_intensity(html)
     print("Italy Carbon Intensity: {0} (gCO₂eq/kWh)".format(carbon_intensity_value))
+    print("Current CPU: {0}".format(energymonitor.get_cpu_info()))
 except exceptions.WebDriverException:
     no_browser = True
 
