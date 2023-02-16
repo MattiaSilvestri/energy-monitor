@@ -2,7 +2,7 @@ import time
 from selenium.common import exceptions
 import energymonitor
 
-# Define url of interest (Italy)
+# Define url of interest (BritalItaly)
 url_electricity_map = "https://app.electricitymaps.com/zone/IT?aggregated=true"
 
 # Try with Chrome if installed
