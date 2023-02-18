@@ -1,25 +1,20 @@
-import time
-from selenium.common import exceptions
 import energymonitor
 
-# Define url of interest (BritalItaly)
-url_electricity_map = "https://app.electricitymaps.com/zone/IT?aggregated=true"
+# Define zone of interest
+country_code = "IT"
 
-# Try with Chrome if installed
-no_browser = False
-try:
-    print('Connecting to Chrome...')
-    driver = energymonitor.chrome_browser_setup()
-    driver.get(url_electricity_map)
-    time.sleep(3) #give time for dynamic text to load
-    html = driver.page_source
-    driver.quit()
-    # Find carbon intensity data on left panel
-    carbon_intensity_value = energymonitor.get_carbon_intensity(html)
-    print("Italy Carbon Intensity: {0} (gCO₂eq/kWh)".format(carbon_intensity_value))
-    print("Current CPU: {0}".format(energymonitor.get_cpu_info()))
-except exceptions.WebDriverException:
-    no_browser = True
 
-if no_browser == True:
-    print('Google Chrome is not correctly installed, please install or update it.')
+# Retrieve data from Co2Signal API
+print('Retrieving Co2Signal data...')
+co2data = energymonitor.get_request_co2signal(country_code)
+
+# Extract relevant measures
+carbon_intensity = co2data['data']['carbonIntensity']
+carbon_intensity_unit = co2data['units']['carbonIntensity']
+fossil_percentage = co2data['data']['fossilFuelPercentage']
+print("\n Selected Country: {0} \n Carbon Intensity: {1} ({2}) \n Percentage of fossil fuel: {3}%".format(country_code, carbon_intensity, carbon_intensity_unit, fossil_percentage))
+
+# Retrieve cpu info
+print('Retrieving CPU data...')
+cpu_info = energymonitor.get_cpu_info()
+print("\n Current CPU: {0}".format(cpu_info))
