@@ -17,4 +17,5 @@ print("- Selected Country: {0} \n- Carbon Intensity: {1} ({2}) \n- Percentage of
 # Retrieve cpu info
 print('\nRetrieving CPU data...')
 cpu_info = energymonitor.get_cpu_info()
-print("- Current CPU: {0}".format(cpu_info))
+cpu_usage = energymonitor.get_cpu_usage(10) #it seems too low to be true!
+print("- Current CPU: {0} \n- CPU usage during last 10s: {1}%".format(cpu_info, cpu_usage))
