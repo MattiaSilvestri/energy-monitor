@@ -6,7 +6,7 @@ def get_cpu_info():
     Return info regarding CPU model installed.
 
     :return: Info regarding CPU model installed
-    :rtype: list
+    :rtype: str
     """
 
     try:
@@ -14,7 +14,7 @@ def get_cpu_info():
     except:
         cpu_info= "CPU Info not available"
         
-    return [cpu_info]
+    return cpu_info
 
 
 def get_cpu_usage(seconds):
