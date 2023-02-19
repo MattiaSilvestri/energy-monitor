@@ -24,12 +24,12 @@ def get_cpu_usage(seconds):
     :param seconds: Time interval period considered
     :type seconds: float
     :return: CPU usage percentage
-    :rtype: float
+    :rtype: float or None
     """
 
     try:
         cpu_percentage = psutil.cpu_percent(seconds)
     except:
-        cpu_percentage= "CPU usage not available"
+        cpu_percentage= None
         
     return cpu_percentage
