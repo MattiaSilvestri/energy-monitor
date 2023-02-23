@@ -1,13 +1,16 @@
-import energymonitor
+import energymonitor as em
+from energymonitor import api_calls
 
 # Define zone of interest
 country_code = "IT"
 
 
-<<<<<<< HEAD
 # Retrieve data from Co2Signal API
 print('\nRetrieving Co2Signal data...')
-co2data = energymonitor.get_request_co2signal(country_code)
+geolocation = api_calls.get_location()
+lon = geolocation['longitude']
+lat = geolocation['latitude']
+co2data = api_calls.get_request_co2signal(lon, lat)
 
 # Extract relevant measures
 carbon_intensity = co2data['data']['carbonIntensity']
@@ -17,10 +20,6 @@ print("- Selected Country: {0} \n- Carbon Intensity: {1} ({2}) \n- Percentage of
 
 # Retrieve cpu info
 print('\nRetrieving CPU data...')
-cpu_info = energymonitor.get_cpu_info()
-cpu_usage = energymonitor.get_cpu_usage(10) #it seems too low to be true!
+cpu_info = em.get_cpu_info()
+cpu_usage = em.get_cpu_usage(10) #it seems too low to be true!
 print("- Current CPU: {0} \n- CPU usage during last 10s: {1}%".format(cpu_info, cpu_usage))
-=======
-if no_browser == True:
-    raise(energymonitor.exceptions.BrowserNotFound)
->>>>>>> 544e0bc (Add BrowserNotFound exception.)
