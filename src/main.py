@@ -1,10 +1,6 @@
 import energymonitor as em
 from energymonitor import api_calls
 
-# Define zone of interest
-country_code = "IT"
-
-
 # Retrieve data from Co2Signal API
 print('\nRetrieving Co2Signal data...')
 geolocation = api_calls.get_location()
