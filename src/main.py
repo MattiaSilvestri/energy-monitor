@@ -1,13 +1,22 @@
 import energymonitor as em
 from energymonitor import api_calls
+from energymonitor import user_inputs
 
-# Retrieve data from Co2Signal API
+country_code = user_inputs.get_country()
+
+# Use manual country code if set, otherwise use geolocalizaion
+if country_code:
+    # Retrieve data from Co2Signal API
+    co2data = api_calls.get_request_co2signal(countrycode=country_code)
+else:
+    # Get location
+    geolocation = api_calls.get_location()
+    lon = geolocation['longitude']
+    lat = geolocation['latitude']
+    # Retrieve data from Co2Signal API
+    co2data = api_calls.get_request_co2signal(lon, lat)
+
 print('\nRetrieving Co2Signal data...')
-geolocation = api_calls.get_location()
-lon = geolocation['longitude']
-lat = geolocation['latitude']
-co2data = api_calls.get_request_co2signal(lon, lat)
-
 # Extract relevant measures
 carbon_intensity = co2data['data']['carbonIntensity']
 carbon_intensity_unit = co2data['units']['carbonIntensity']
