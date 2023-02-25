@@ -2,9 +2,7 @@ import energymonitor as em
 from energymonitor import api_calls
 from energymonitor import cli
 
-def main(args) -> None:
-
-    country_code = args.country
+def main(country_code = None) -> None:
 
     # Use manual country code if set, otherwise use geolocalizaion
     if country_code:
@@ -38,12 +36,13 @@ if args.list:
     # Display country list if requested
     cli.show_list()
 elif args.country:
-    # Launch main with manua country selection
-    main(args)
+    # Launch main with manual country selection
+    country_code = args.country
+    main(country_code)
 else:
     # Disclaimer message
     print("The application uses IP geolocation to retrieve your position. If you \
-want to disable automatic geolocation, use the --set-country flag to \
+want to disable automatic geolocation, launch the application with the the --set-country flag to \
 manually input your country.", end="\n")
 
     # Get confirmation from user
@@ -55,7 +54,8 @@ manually input your country.", end="\n")
             main(args)
             break
         elif confirm == "n" or confirm == "no":
-            print("See you space cowboy...")
+            country_code = input("Insert conutry code: ")
+            main(country_code)
             break
         else:
             print("Please reply with either yes (y) or no (n).\n")
