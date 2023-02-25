@@ -41,5 +41,21 @@ elif args.country:
     # Launch main with manua country selection
     main(args)
 else:
-    # Launch main with geolocalizaion
-    main(args)
+    # Disclaimer message
+    print("The application uses IP geolocation to retrieve your position. If you \
+want to disable automatic geolocation, use the --set-country flag to \
+manually input your country.", end="\n")
+
+    # Get confirmation from user
+    while True:
+        confirm = input("Continute with geolocation? [y/n] ")
+
+        if confirm == "y" or confirm == "yes":
+            # Launch main with geolocalizaion
+            main(args)
+            break
+        elif confirm == "n" or confirm == "no":
+            print("See you space cowboy...")
+            break
+        else:
+            print("Please reply with either yes (y) or no (n).\n")
