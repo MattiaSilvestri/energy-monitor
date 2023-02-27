@@ -2,20 +2,21 @@ import energymonitor as em
 from energymonitor import api_calls
 from energymonitor import cli
 
-def main(args) -> None:
+def main(args = None, country_code = None) -> None:
 
-    country_code = args.country
     # Use manual country code if set, otherwise use geolocalizaion
-    if country_code:
-        # Retrieve data from Co2Signal API
-        co2data = api_calls.get_request_co2signal(countrycode=country_code)
-    else:
+    if args:
         # Get location
         geolocation = api_calls.get_location()
         lon = geolocation['longitude']
         lat = geolocation['latitude']
+
         # Retrieve data from Co2Signal API
         co2data = api_calls.get_request_co2signal(lon, lat)
+        country_code = co2data['countryCode']
+    elif country_code:
+        # Retrieve data from Co2Signal API
+        co2data = api_calls.get_request_co2signal(countrycode=country_code)
 
     print('\nRetrieving Co2Signal data...')
     # Extract relevant measures
@@ -39,7 +40,7 @@ if args.list:
 elif args.country:
     # Launch main with manual country selection
     country_code = args.country
-    main(country_code)
+    main(country_code=country_code)
 else:
     # Disclaimer message
     print("The application uses IP geolocation to retrieve your position. If you \
@@ -52,11 +53,11 @@ manually input your country.", end="\n")
 
         if confirm == "y" or confirm == "yes":
             # Launch main with geolocalizaion
-            main(args)
+            main(args=args)
             break
         elif confirm == "n" or confirm == "no":
             country_code = input("Insert conutry code: ")
-            main(country_code)
+            main(country_code=country_code)
             break
         else:
             print("Please reply with either yes (y) or no (n).\n")
