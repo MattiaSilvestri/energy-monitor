@@ -2,8 +2,9 @@ import energymonitor as em
 from energymonitor import api_calls
 from energymonitor import cli
 
-def main(country_code = None) -> None:
+def main(args) -> None:
 
+    country_code = args.country
     # Use manual country code if set, otherwise use geolocalizaion
     if country_code:
         # Retrieve data from Co2Signal API
