@@ -18,18 +18,22 @@ def main(args = None, country_code = None) -> None:
         # Retrieve data from Co2Signal API
         co2data = api_calls.get_request_co2signal(countrycode=country_code)
 
-    print('\nRetrieving Co2Signal data...')
-    # Extract relevant measures
-    carbon_intensity = co2data['data']['carbonIntensity']
-    carbon_intensity_unit = co2data['units']['carbonIntensity']
-    fossil_percentage = round(co2data['data']['fossilFuelPercentage'],2)
-    print("- Selected Country: {0} \n- Carbon Intensity: {1} ({2}) \n- Percentage of fossil fuel: {3}%".format(country_code, carbon_intensity, carbon_intensity_unit, fossil_percentage))
+    try:
+        # Extract relevant measures
+        print('\nRetrieving Co2Signal data...')
+        carbon_intensity = co2data['data']['carbonIntensity']
+        carbon_intensity_unit = co2data['units']['carbonIntensity']
+        fossil_percentage = round(co2data['data']['fossilFuelPercentage'],2)
+        print("- Selected Country: {0} \n- Carbon Intensity: {1} ({2}) \n- Percentage of fossil fuel: {3}%".format(country_code, carbon_intensity, carbon_intensity_unit, fossil_percentage))
 
-    # Retrieve cpu info
-    print('\nRetrieving CPU data...')
-    cpu_info = em.get_cpu_info()
-    cpu_usage = em.get_cpu_usage(10) #it seems too low to be true!
-    print("- Current CPU: {0} \n- CPU usage during last 10s: {1}%".format(cpu_info, cpu_usage))
+        # Retrieve cpu info
+        print('\nRetrieving CPU data...')
+        cpu_info = em.get_cpu_info()
+        cpu_usage = em.get_cpu_usage(10) #it seems too low to be true!
+        print("- Current CPU: {0} \n- CPU usage during last 10s: {1}%".format(cpu_info, cpu_usage))
+    except KeyError:
+        print('Sorry, your country is not present in the Electricity Map ' +
+              'database, it is therefore not possible to retrieve CO2 emissions data.')
 
 
 args = cli.get_args()
@@ -45,7 +49,9 @@ else:
     # Disclaimer message
     print("The application uses IP geolocation to retrieve your position. If you \
 want to disable automatic geolocation, launch the application with the the --set-country flag to \
-manually input your country.", end="\n")
+manually input your country. Unfortunately the Electricity Map database doesn't \
+contain all countries, so your country might not have CO2 data even if it's \
+present in the list.", end="\n")
 
     # Get confirmation from user
     while True:
