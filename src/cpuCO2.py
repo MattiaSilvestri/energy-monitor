@@ -1,0 +1,36 @@
+from core.main import main
+from energymonitor import cli
+
+# Script for launching the app
+
+args = cli.get_args()
+
+if args.list:
+    # Display country list if requested
+    cli.show_list()
+elif args.country:
+    # Launch main with manual country selection
+    country_code = args.country
+    main(country_code=country_code)
+else:
+    # Disclaimer message
+    print("The application uses IP geolocation to retrieve your position. If you \
+want to disable automatic geolocation, launch the application with the the --set-country flag to \
+manually input your country. Unfortunately the Electricity Map database doesn't \
+contain all countries, so your country might not have CO2 data even if it's \
+present in the list.", end="\n")
+
+    # Get confirmation from user
+    while True:
+        confirm = input("Continute with geolocation? [y/n] ")
+
+        if confirm == "y" or confirm == "yes":
+            # Launch main with geolocalizaion
+            main(args=args)
+            break
+        elif confirm == "n" or confirm == "no":
+            country_code = input("Insert conutry code: ")
+            main(country_code=country_code)
+            break
+        else:
+            print("Please reply with either yes (y) or no (n).\n")
