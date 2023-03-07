@@ -1,5 +1,5 @@
-from core.main import main
-from energymonitor import cli
+from core.cpuCO2 import cpu_co2
+from utils import cli
 
 # Script for launching the app
 
@@ -11,7 +11,7 @@ if args.list:
 elif args.country:
     # Launch main with manual country selection
     country_code = args.country
-    main(country_code=country_code)
+    cpu_co2(country_code=country_code)
 else:
     # Disclaimer message
     print("The application uses IP geolocation to retrieve your position. If you \
@@ -26,11 +26,11 @@ present in the list.", end="\n")
 
         if confirm == "y" or confirm == "yes":
             # Launch main with geolocalizaion
-            main(args=args)
+            cpu_co2(args=args)
             break
         elif confirm == "n" or confirm == "no":
             country_code = input("Insert conutry code: ")
-            main(country_code=country_code)
+            cpu_co2(country_code=country_code)
             break
         else:
             print("Please reply with either yes (y) or no (n).\n")
