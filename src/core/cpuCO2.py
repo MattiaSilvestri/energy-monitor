@@ -36,3 +36,24 @@ def cpu_co2(args = None, country_code = None) -> None:
         print('Sorry, your country is not present in the Electricity Map ' +
               'database, it is therefore not possible to retrieve CO2 emissions data.')
 
+
+def combine_cpu_CO2(cpu_usage: float, cpu_tdp: int, co2_intensity: float) -> float:
+    """
+    Combine CPU usage, CPU TDP and CO2 intensity to compute CO2 consumption.
+
+    :param cpu_usage: average CPU usage over a time interval period
+    :type cpu_usage: float
+    :param cpu_tdp: CPU Thermal Design Power (TDP) in watts
+    :type cpu_tdp: int
+    :param co2_intensity: carbon intensity value for the selected country
+    :type co2_intensity: float
+    :return: grams of CO2 emitted for your CPU usage in the specified time
+    :rtype: float
+
+    :return: CPU usage percentage
+    :rtype: float or None
+    """
+    cpu_tdp_KWh = cpu_tdp/1000
+    used_KWh = cpu_usage * cpu_tdp_KWh / 100
+    co2_emissions = used_KWh * co2_intensity
+    return co2_emissions
