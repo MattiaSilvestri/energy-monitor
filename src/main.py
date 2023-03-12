@@ -5,12 +5,9 @@ from utils import cli
 
 args = cli.get_args()
 
-if args.list:
-    # Display country list if requested
-    cli.show_list()
-elif args.country:
+if args.country:
     # Launch main with manual country selection
-    country_code = args.country
+    country_code = cli.show_list()
     cpu_co2(country_code=country_code)
 else:
     # Disclaimer message
@@ -26,10 +23,10 @@ present in the list.", end="\n")
 
         if confirm == "y" or confirm == "yes":
             # Launch main with geolocalizaion
-            cpu_co2(args=args)
+            cpu_co2()
             break
         elif confirm == "n" or confirm == "no":
-            country_code = input("Insert conutry code: ")
+            country_code = cli.show_list()
             cpu_co2(country_code=country_code)
             break
         else:

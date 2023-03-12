@@ -2,11 +2,14 @@ import utils as em
 from utils import api_calls
 from utils import cli
 
-def cpu_co2(args = None, country_code = None) -> None:
+def cpu_co2(country_code = None) -> None:
     """Function to run the core of the app: compare CPU usage with CO2 emissions"""
 
     # Use manual country code if set, otherwise use geolocalizaion
-    if args:
+    if country_code:
+        # Retrieve data from Co2Signal API
+        co2data = api_calls.get_request_co2signal(countrycode=country_code)
+    else:
         # Get location
         geolocation = api_calls.get_location()
         lon = geolocation['longitude']
@@ -15,9 +18,6 @@ def cpu_co2(args = None, country_code = None) -> None:
         # Retrieve data from Co2Signal API
         co2data = api_calls.get_request_co2signal(lon, lat)
         country_code = co2data['countryCode']
-    elif country_code:
-        # Retrieve data from Co2Signal API
-        co2data = api_calls.get_request_co2signal(countrycode=country_code)
 
     try:
         # Extract relevant measures
