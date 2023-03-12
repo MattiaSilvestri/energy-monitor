@@ -2,6 +2,8 @@
 
 import argparse
 import requests
+from simple_term_menu import TerminalMenu
+from itertools import repeat
 
 help_message = 'It collects CO2 emissions data from your country and compare \
 it with your energy consumption to produce an estimate of the CO2 generated \
@@ -43,5 +45,12 @@ def show_list() -> None:
         zone = req.json()[k]['zoneName']
         country_map[zone] = k
 
+    # Add searchable menu
+    entries = list(repeat(0, len(country_map)))
+    count = 0
     for k in sorted(country_map):
-        print(k + ' : ' + country_map[k])
+        entries[count] = k + ' : ' + country_map[k]
+        count += 1
+
+    term_menu = TerminalMenu(entries)
+    menu_entry_index = term_menu.show()
