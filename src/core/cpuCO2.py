@@ -38,7 +38,7 @@ def cpu_co2(args = None, country_code = None) -> None:
         # Combine Co2 with CPU usage
         print('\nCombining Co2 and CPU data...')
         co2_emissions = combine_cpu_CO2(cpu_usage, cpu.get_cpu_tdp(), carbon_intensity)
-        print("- In the last {1} seconds your CPU footprint was: {0} g".format(co2_emissions, cpu_retrieval_time))
+        print("- In the last {0} seconds your CPU footprint was: {1} g".format(cpu_retrieval_time, co2_emissions))
 
     except KeyError:
         print('Sorry, your country is not present in the Electricity Map ' +
