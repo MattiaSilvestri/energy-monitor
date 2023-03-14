@@ -2,6 +2,8 @@
 
 import argparse
 import requests
+from simple_term_menu import TerminalMenu
+from itertools import repeat
 
 help_message = 'It collects CO2 emissions data from your country and compare \
 it with your energy consumption to produce an estimate of the CO2 generated \
@@ -16,21 +18,21 @@ def get_args() -> argparse.Namespace:
     :rtype: arparse.Namespace
     """
 
-    parser.add_argument('-s', '--set-country', dest='country', type=str,
+    parser.add_argument('-c', '--set-country', dest='country', type=str,
                         help='Manually set location')
     parser.add_argument('-l', '--show-list', dest='list', action='store_true',
                         help='Show list of available country codes')
-
     args = parser.parse_args()
     return args
 
 
-def show_list() -> None:
+def show_list() -> str:
     """
-    Display list of available countries and their code in alphabetical order.
+    Display a searchable list of available countries and their code in
+    alphabetical order and returns the ID of the selected country.
 
-    :return: None
-    :rtype: None
+    :return: ID of the selected country
+    :rtype: str
     """
 
     url = 'https://api.electricitymap.org/v3/zones'
@@ -43,5 +45,23 @@ def show_list() -> None:
         zone = req.json()[k]['zoneName']
         country_map[zone] = k
 
+    # Add searchable menu
+    entries = list(repeat(0, len(country_map)))
+    count = 0
+    sorted_countries = {}
     for k in sorted(country_map):
-        print(k + ' : ' + country_map[k])
+        sorted_countries[k] = country_map[k]
+        entries[count] = k + ' : ' + sorted_countries[k]
+        count += 1
+
+    term_menu = TerminalMenu(
+        menu_entries = entries,
+        title = 'Start typing to filter your country. \n',
+        search_key = None
+    )
+    menu_entry_index = term_menu.show()
+
+    # Get ID of the selected country
+    country_id = list(sorted_countries.values())[menu_entry_index]
+
+    return country_id
