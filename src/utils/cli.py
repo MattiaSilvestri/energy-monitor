@@ -54,7 +54,11 @@ def show_list() -> str:
         entries[count] = k + ' : ' + sorted_countries[k]
         count += 1
 
-    term_menu = TerminalMenu(entries)
+    term_menu = TerminalMenu(
+        menu_entries = entries,
+        title = 'Start typing to filter your country. \n',
+        search_key = None
+    )
     menu_entry_index = term_menu.show()
 
     # Get ID of the selected country
