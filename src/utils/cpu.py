@@ -33,3 +33,13 @@ def get_cpu_usage(seconds):
         cpu_percentage= None
         
     return cpu_percentage
+
+def get_cpu_tdp():
+    """
+    Mock function to be replaced soon.
+
+    :return: CPU Thermal Design Power (TDP) in watts
+    :rtype: int
+    """
+        
+    return 80
