@@ -18,9 +18,10 @@ def get_args() -> argparse.Namespace:
     :rtype: arparse.Namespace
     """
 
-    parser.add_argument('-c', '--set-country', dest='country', action='store_true',
+    parser.add_argument('-c', '--set-country', dest='country', type=str,
+                        help='Manually set location')
+    parser.add_argument('-l', '--show-list', dest='list', action='store_true',
                         help='Show list of available country codes')
-
     args = parser.parse_args()
     return args
 

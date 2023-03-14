@@ -5,9 +5,13 @@ from utils import cli
 
 args = cli.get_args()
 
-if args.country:
-    # Launch main with manual country selection
+if args.list:
+    # Display country list if requested
     country_code = cli.show_list()
+    cpu_co2(country_code=country_code)
+elif args.country:
+    # Launch main with manual country selection
+    country_code = args.country
     cpu_co2(country_code=country_code)
 else:
     # Disclaimer message
