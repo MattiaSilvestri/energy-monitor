@@ -3,6 +3,7 @@
 import argparse
 import requests
 from simple_term_menu import TerminalMenu
+from InquirerPy import inquirer
 from itertools import repeat
 
 help_message = 'It collects CO2 emissions data from your country and compare \
@@ -54,14 +55,28 @@ def show_list() -> str:
         entries[count] = k + ' : ' + sorted_countries[k]
         count += 1
 
-    term_menu = TerminalMenu(
-        menu_entries = entries,
-        title = 'Start typing to filter your country. \n',
-        search_key = None
-    )
-    menu_entry_index = term_menu.show()
+    # term_menu = TerminalMenu(
+    #     menu_entries = entries,
+    #     title = 'Start typing to filter your country. \n',
+    #     search_key = None
+    # )
+    # menu_entry_index = term_menu.show()
+    select = inquirer.fuzzy(
+        message="Select country (start typing to search):",
+        choices=entries,
+        vi_mode=True,
+        border=True,
+        amark="",
+        keybindings={
+            "interrupt": [{"key": "c-c"}],
+            "down": [{"key": "c-j"},{"key": "down"}],
+            "up": [{"key": "c-k"},{"key": "up"}]
+        },
+    ).execute()
+    confirm = inquirer.confirm(message="Confirm?", amark="", qmark="").execute()
 
     # Get ID of the selected country
-    country_id = list(sorted_countries.values())[menu_entry_index]
+    country_id = select.split()[-1]
+    # country_id = list(sorted_countries.values())[menu_entry_index]
 
     return country_id

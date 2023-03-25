@@ -25,4 +25,4 @@ trio-websocket==0.9.2
 urllib3==1.26.14
 webdriver-manager==3.8.5
 wsproto==1.2.0
-simple_term_menu==1.6.1
+InquirerPy==0.3.4
