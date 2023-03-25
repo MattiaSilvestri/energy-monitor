@@ -75,6 +75,5 @@ def show_list() -> str:
 
     # Get ID of the selected country
     country_id = select.split()[-1]
-    # country_id = list(sorted_countries.values())[menu_entry_index]
 
     return country_id
