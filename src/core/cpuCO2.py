@@ -1,5 +1,6 @@
-import utils
+import utils as em
 from utils import api_calls
+from utils import cli
 from utils import cpu
 
 def cpu_co2(country_code = None) -> None:
@@ -30,8 +31,8 @@ def cpu_co2(country_code = None) -> None:
         # Retrieve cpu info
         cpu_retrieval_time = 10 #to export in a configuration file
         print(f'\nRetrieving CPU usage of the next {cpu_retrieval_time} seconds...')
-        cpu_info = cpu.get_cpu_info()
-        cpu_usage = cpu.get_cpu_usage(cpu_retrieval_time) #it seems too low to be true!
+        cpu_info = em.get_cpu_info()
+        cpu_usage = em.get_cpu_usage(cpu_retrieval_time) #it seems too low to be true!
         print("- Current CPU: {0} \n- CPU usage during last 10s: {1}%".format(cpu_info, cpu_usage))
 
         # Combine Co2 with CPU usage
