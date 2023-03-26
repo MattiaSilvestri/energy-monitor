@@ -56,22 +56,25 @@ def show_list() -> str:
         count += 1
 
     style = get_style({"fuzzy_prompt": "hidden"}, style_override=False)
-    select = inquirer.fuzzy(
-        message="Select country (start typing to search):",
-        choices=entries,
-        vi_mode=True,
-        border=True,
-        amark="",
-	  qmark="",
-	  pointer="> ",
-	  style=style,
-        keybindings={
-            "interrupt": [{"key": "c-c"}],
-            "down": [{"key": "c-j"},{"key": "down"}],
-            "up": [{"key": "c-k"},{"key": "up"}]
-        },
-    ).execute()
-    confirm = inquirer.confirm(message="Confirm?", amark="", qmark="", default=True).execute()
+
+    confirm = False
+    while not confirm:
+        select = inquirer.fuzzy(
+            message="Select country (start typing to search):",
+            choices=entries,
+            vi_mode=True,
+            border=True,
+            amark="",
+        qmark="",
+        pointer="> ",
+        style=style,
+            keybindings={
+                "interrupt": [{"key": "c-c"}],
+                "down": [{"key": "c-j"},{"key": "down"}],
+                "up": [{"key": "c-k"},{"key": "up"}]
+            },
+        ).execute()
+        confirm = inquirer.confirm(message="Confirm?", amark="", qmark="", default=True).execute()
 
     # Get ID of the selected country
     country_id = select.split()[-1]
