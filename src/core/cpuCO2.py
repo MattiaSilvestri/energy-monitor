@@ -1,5 +1,4 @@
-from utils import api_calls
-from utils import cpu
+from utils import api_calls, cpu
 
 def cpu_co2(country_code = None) -> None:
     """Function to run the core of the app: compare CPU usage with CO2 emissions"""
