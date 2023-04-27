@@ -4,8 +4,7 @@ import os
 import pandas as pd
 import psutil
 import re
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+from scraping import scrape_tdp_intel, get_AMD_database
 
 
 def get_cpu_info():
@@ -43,10 +42,11 @@ def get_cpu_usage(seconds):
     return cpu_percentage
 
 
-def get_cpu_tdp():
+def get_cpu_tdp(cpu_name) -> float:
     """
     Get the CPU Thermal Design Power (TDP) in watts from the manufacturer.
 
+    :param cpu_name: CPU name, coming from get_cpu_info()
     :return: CPU Thermal Design Power (TDP) in watts
     :rtype: int
     """
@@ -56,39 +56,24 @@ def get_cpu_tdp():
         with open(json_fname, 'r') as f:
             tdp = json.load(f)['tdp']
     else: 
-        # get the cpu name
-        cpu_name = get_cpu_info()
         if 'Intel' in cpu_name:
             # retrieve information from the intel website
-            # initialize the driver
-            from utils.scraping import chrome_browser_setup
-            driver = chrome_browser_setup()
-            # open the intel website with selenium
-            search_url = "https://ark.intel.com/content/www/us/en/ark/search.html?_charset_=UTF-8&q="
-            driver.get(search_url)
-            # get the search bar
-            search_bar = driver.find_element(By.ID, "ark-searchbox")
-            # send the cpu_name to the search bar on the website
-            search_bar.send_keys([x for x in cpu_name.split(' ') if x.startswith('i')][0])
-            # search for the name that was sent
-            search_bar.send_keys(Keys.RETURN)
-            # find the span element that contains the TDP, identified by the attribute "MaxTDP"
-            tdp = driver.find_element(By.XPATH, "//span[@data-key='MaxTDP']").text
-            # retain only the numbers including the decimal points, if present
-            tdp = float(re.findall(r'\d+\.\d+|\d+', tdp)[0])
-            # close the driver
-            driver.close()
+            tdp = scrape_tdp_intel(cpu_name)
         elif 'AMD' in cpu_name:
             # use the json file stored in the data folder to retrieve the TDP
-            # Opening JSON file
-            f = open(os.path.join('..', 'data', 'tableExport.json'))
-            # returns JSON object as a dictionary
-            data = json.load(f)
+            amd_fname = os.path.join('..', 'data', 'tableExport.json')
+            if not os.path.isfile(amd_fname):
+                # download it from our github repository
+                data = get_AMD_database(amd_fname)
+            else:
+                # returns JSON object as a dictionary
+                data = json.load(open(amd_fname))
             # Iterate through the json to get the model name and the TDP
             for model_info in data['data']:
                 # remove non alphanumeric characters (i.e., TM) from Model name
-                model = re.sub(r'\W+', ' ', model_info['Model'])
+                model = re.sub(r'\W+', ' ', str(model_info['Model']))
                 if model in cpu_name:
+                    print(model)
                     # get the TDP, remove the non numeric characters and convert to float
                     tdp = float(re.sub(r'\D+', '', model_info['Default TDP']))
                     break
@@ -99,4 +84,3 @@ def get_cpu_tdp():
             json.dump({'tdp': tdp}, f)
     # return the tdp value
     return tdp
-        
