@@ -28,3 +28,4 @@ wsproto==1.2.0
 InquirerPy==0.3.4
 py-cpuinfo==9.0.0
 psutil==5.9.4
+pyinstaller==5.10.0
