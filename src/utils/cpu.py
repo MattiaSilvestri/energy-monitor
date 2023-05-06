@@ -42,4 +42,4 @@ def get_cpu_tdp():
     :rtype: int
     """
         
-    return 80
+    return 15
