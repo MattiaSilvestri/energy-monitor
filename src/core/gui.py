@@ -9,12 +9,19 @@ from random import randint
 
 
 class MyApp(QWidget):
-    def __init__(self, cpu_tdp, co2_intensity, get_interval_emissions_method):
+    def __init__(self, cpu_tdp, co2_intensity, time_interval, get_interval_emissions_method):
         super().__init__()
         self.setWindowTitle('Energy Monitor Plot')
         # self.window_width, self.window_height = 1200, 800
         # self.setMinimumSize(self.window_width, self.window_height)
         self.get_interval_emissions_method = get_interval_emissions_method
+        self.time_interval = time_interval
+
+        # some example data
+        self.x = np.arange(200)[::-1]*-1
+        self.y = self.x*0
+        self.cpu_tdp = cpu_tdp
+        self.co2_intesity = co2_intensity
 
         layout = QVBoxLayout()
         self.setLayout(layout)
@@ -23,15 +30,9 @@ class MyApp(QWidget):
         layout.addWidget(self.canvas)
         self.insert_ax()
 
-        # some example data
-        self.x = np.arange(200)[::-1]*-1
-        self.y = self.x*0
-        self.cpu_tdp = cpu_tdp
-        self.co2_intesity = co2_intensity
-
         # timer
         self.timer = QTimer()
-        self.timer.setInterval(1000)
+        self.timer.setInterval(1000*self.time_interval)
         self.timer.timeout.connect(self.update_chart)
         self.timer.start()
 
@@ -43,11 +44,19 @@ class MyApp(QWidget):
         matplotlib.rc('font', **font)
         self.ax = self.canvas.figure.subplots()
         self.ax.set_xlim([-200, 0])
+
+        labels_all = self.x * self.time_interval / 60
+        labels = labels_all[np.linspace(0,len(labels_all)-1, 9).astype(int)]
+        labels_ticks = [str(round(element, 1))+"min" for element in list(labels)]
+        self.ax.set_xticklabels(labels_ticks)
+
+        self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}s", fontsize="small", rotation="horizontal", horizontalalignment="right")
+        self.ax.set_xlabel("Time")
         self.line_plot = None
 
     def update_chart(self):
 
-        new_value =  self.get_interval_emissions_method(self.cpu_tdp, self.co2_intesity)  # randint(0,50)
+        new_value =  self.get_interval_emissions_method(self.cpu_tdp, self.co2_intesity, self.time_interval)  # randint(0,50)
         self.y = self.y[1:]  # Remove the first
         self.y = np.append(self.y, new_value)
 
@@ -67,7 +76,7 @@ if __name__ == '__main__':
         }
     ''')
     
-    myApp = MyApp()
+    myApp = MyApp(15, 400, lambda x,y,z : randint(0,10))
     myApp.show()
 
     try:
