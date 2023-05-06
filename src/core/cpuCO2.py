@@ -29,7 +29,7 @@ def cpu_co2(country_code = None) -> None:
         print("- Selected Country: {0} \n- Carbon Intensity: {1} ({2}) \n- Percentage of fossil fuel: {3}%".format(country_code, carbon_intensity, carbon_intensity_unit, fossil_percentage))
 
         # Retrieve cpu info
-        cpu_retrieval_time = 2 #to export in a configuration file
+        cpu_retrieval_time = 1 #to export in a configuration file
         print(f'\nRetrieving CPU usage of the next {cpu_retrieval_time} seconds...')
         cpu_info = cpu.get_cpu_info()
         cpu_usage = cpu.get_cpu_usage(cpu_retrieval_time) #it seems too low to be true!
@@ -37,7 +37,7 @@ def cpu_co2(country_code = None) -> None:
 
         # Combine Co2 with CPU usage
         print('\nCombining Co2 and CPU data...')
-        co2_emissions = combine_cpu_CO2(cpu_usage, cpu.get_cpu_tdp(cpu_info), carbon_intensity)
+        co2_emissions = combine_cpu_CO2(cpu_usage, cpu_retrieval_time, cpu.get_cpu_tdp(), carbon_intensity)
         print("- In the last {0} seconds your CPU footprint was: {1} g".format(cpu_retrieval_time, co2_emissions))
 
         # Launch plot
@@ -47,26 +47,27 @@ def cpu_co2(country_code = None) -> None:
                 font-size: 30px;
             }
         ''')
-        myApp = MyApp(cpu.get_cpu_tdp(), carbon_intensity, get_interval_emissions)
+        myApp = MyApp(cpu.get_cpu_tdp(), carbon_intensity, cpu_retrieval_time, get_interval_emissions)
         myApp.show()
-        print('\nPlot window is execution...')
+        print('\nPlot window in execution...')
         try:
             sys.exit(app.exec_())
         except SystemExit:
             print('Closing Window...')
-
 
     except KeyError:
         print('Sorry, your country is not present in the Electricity Map ' +
               'database, it is therefore not possible to retrieve CO2 emissions data.')
 
 
-def combine_cpu_CO2(cpu_usage: float, cpu_tdp: int, co2_intensity: float) -> float:
+def combine_cpu_CO2(cpu_usage: float, usage_time: int, cpu_tdp: int, co2_intensity: float) -> float:
     """
     Combine CPU usage, CPU TDP and CO2 intensity to compute CO2 consumption.
 
     :param cpu_usage: average CPU usage over a time interval period
     :type cpu_usage: float
+    :param usage_time: CPU usage time period in seconds
+    :type usage_time: int
     :param cpu_tdp: CPU Thermal Design Power (TDP) in watts
     :type cpu_tdp: int
     :param co2_intensity: carbon intensity value for the selected country
@@ -74,13 +75,19 @@ def combine_cpu_CO2(cpu_usage: float, cpu_tdp: int, co2_intensity: float) -> flo
     :return: grams of CO2 emitted for your CPU usage in the specified time
     :rtype: float
     """
-    cpu_tdp_KWh = cpu_tdp/1000
-    used_KWh = cpu_usage * cpu_tdp_KWh / 100
-    co2_emissions = round(used_KWh * co2_intensity, 2)
+    # transfrom Watt in kWatt
+    cpu_tdp_KW = cpu_tdp/1000
+
+    # transfrom kW in kWh and take a certain proportion of it
+    used_KWh = cpu_usage * cpu_tdp_KW / 100 * (usage_time/3600)
+
+    # get the g of Co2
+    co2_emissions = round(used_KWh * co2_intensity, 6)
+
     return co2_emissions
 
 
-def get_interval_emissions(cpu_tdp: int, co2_intensity: float) -> float:
+def get_interval_emissions(cpu_tdp: int, co2_intensity: float, time_frequency: int) -> float:
     """
     From a given cpu_tdp and co2_intensity return the co2 emissions computing the cpu_usage at current time.
 
@@ -88,15 +95,16 @@ def get_interval_emissions(cpu_tdp: int, co2_intensity: float) -> float:
     :type cpu_tdp: int
     :param co2_intensity: carbon intensity value for the selected country
     :type co2_intensity: float
+    :param usage_time: frequency of CPU usage estimation in seconds
+    :type usage_time: int
     :return: grams of CO2 emitted for your CPU usage in the specified time
     :rtype: float
     """
 
     # Retrieve cpu usage
-    cpu_retrieval_time = 1 #to export in a configuration file
-    cpu_usage = cpu.get_cpu_usage(cpu_retrieval_time)
+    cpu_usage = cpu.get_cpu_usage(time_frequency)
 
     # Combine Co2 with CPU usage
-    co2_emissions = combine_cpu_CO2(cpu_usage, cpu_tdp, co2_intensity)
+    co2_emissions = combine_cpu_CO2(cpu_usage, time_frequency, cpu_tdp, co2_intensity)
 
     return co2_emissions
