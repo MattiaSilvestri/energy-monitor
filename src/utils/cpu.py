@@ -50,7 +50,10 @@ def get_cpu_tdp(cpu_name: str) -> float:
     :return: CPU Thermal Design Power (TDP) in watts
     :rtype: float
     """
-    json_fname = os.path.join('..', 'data', 'cpu_tdp.json')
+    # get the path to the data folder
+    path = [x[0] for x in os.walk('..') if 'data' in x[0]][0]
+    # define file name of the output file
+    json_fname = os.path.join(path, 'cpu_tdp.json')
     if os.path.isfile(json_fname):
         # load json file with the cpu tdp info
         with open(json_fname, 'r') as f:
@@ -61,7 +64,7 @@ def get_cpu_tdp(cpu_name: str) -> float:
             tdp = scrape_tdp_intel(cpu_name)
         elif 'AMD' in cpu_name:
             # use the json file stored in the data folder to retrieve the TDP
-            amd_fname = os.path.join('..', 'data', 'tableExport.json')
+            amd_fname = os.path.join(path, 'tableExport.json')
             if not os.path.isfile(amd_fname):
                 # download it from our github repository
                 data = get_AMD_database(amd_fname)
