@@ -16,6 +16,7 @@ class MyApp(QWidget):
         # self.setMinimumSize(self.window_width, self.window_height)
         self.get_interval_emissions_method = get_interval_emissions_method
         self.time_interval = time_interval
+        self.new_value = None
 
         # some example data
         self.x = np.arange(200)[::-1]*-1
@@ -33,6 +34,7 @@ class MyApp(QWidget):
         # timer
         self.timer = QTimer()
         self.timer.setInterval(1000*self.time_interval)
+        self.timer.timeout.connect(self.compute_new_value)
         self.timer.timeout.connect(self.update_chart)
         self.timer.start()
 
@@ -54,10 +56,14 @@ class MyApp(QWidget):
         self.ax.set_xlabel("Time")
         self.line_plot = None
 
-    def update_chart(self):
+    def compute_new_value(self):
+        self.new_value = self.get_interval_emissions_method(self.cpu_tdp, self.co2_intesity, self.time_interval)
 
-        new_value =  self.get_interval_emissions_method(self.cpu_tdp, self.co2_intesity, self.time_interval)  # randint(0,50)
-        self.y = self.y[1:]  # Remove the first
+    def update_chart(self):
+        # new_value = randint(0,50)
+        # new_value =  self.get_interval_emissions_method(self.cpu_tdp, self.co2_intesity, self.time_interval) # this line makes the plot very slow and heavy, because of cpu.get_cpu_usage(time_frequency). Might be better to use two scripts -> one that writes data in a file, one that reads data from the file for plotting
+        new_value = self.new_value
+        self.y = self.y[1:]
         self.y = np.append(self.y, new_value)
 
         if self.line_plot:
