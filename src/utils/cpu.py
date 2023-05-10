@@ -3,7 +3,6 @@ import json
 import os
 import psutil
 import re
-import warnings
 from utils.scraping import scrape_tdp_intel, get_AMD_database
 
 
