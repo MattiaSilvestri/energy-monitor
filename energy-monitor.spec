@@ -5,10 +5,10 @@ block_cipher = None
 
 
 a = Analysis(
-    ['../src/main.py'],
+    ['./src/main.py'],
     pathex=[],
     binaries=[],
-    datas=[('../data/tableExport.json', './data')],
+    datas=[('./data/tableExport.json', '../data')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
