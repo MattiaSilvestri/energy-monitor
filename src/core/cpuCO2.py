@@ -34,7 +34,7 @@ def cpu_co2(country_code = None) -> None:
 
         # Combine Co2 with CPU usage
         print('\nCombining Co2 and CPU data...')
-        co2_emissions = combine_cpu_CO2(cpu_usage, cpu.get_cpu_tdp(), carbon_intensity)
+        co2_emissions = combine_cpu_CO2(cpu_usage, cpu.get_cpu_tdp(cpu_info), carbon_intensity)
         print("- In the last {0} seconds your CPU footprint was: {1} g".format(cpu_retrieval_time, co2_emissions))
 
     except KeyError:
