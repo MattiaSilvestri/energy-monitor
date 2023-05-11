@@ -1,5 +1,6 @@
 **/__pycache__
 **/bin
 *.tar.gz
-/build/build
-/build/dist
+**/build
+**/dist
+/data/cpu_tdp.json
