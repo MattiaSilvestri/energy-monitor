@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, QObject, QThread, pyqtSignal
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 import matplotlib
@@ -16,7 +16,8 @@ class MyApp(QWidget):
         # self.setMinimumSize(self.window_width, self.window_height)
         self.get_interval_emissions_method = get_interval_emissions_method
         self.time_interval = time_interval
-        self.new_value = None
+        self.new_value = 0
+        self.thread_running = False
 
         # some example data
         self.x = np.arange(200)[::-1]*-1
@@ -56,20 +57,68 @@ class MyApp(QWidget):
         self.ax.set_xlabel("Time")
         self.line_plot = None
 
+    # def compute_new_value(self):
+    #     self.new_value = self.get_interval_emissions_method(self.cpu_tdp, self.co2_intesity, self.time_interval)
+    #     #self.new_value = randint(0,50)
+
     def compute_new_value(self):
-        self.new_value = self.get_interval_emissions_method(self.cpu_tdp, self.co2_intesity, self.time_interval)
+        if not self.thread_running:
+            # Step 2: Create a QThread object
+            self.thread = QThread()
+            # Step 3: Create a worker object
+            self.worker = MyDataCollectorWorker(self.cpu_tdp, self.co2_intesity, self.time_interval, self.get_interval_emissions_method)
+            # Step 4: Move worker to the thread
+            self.worker.moveToThread(self.thread)
+            # Step 5: Connect signals and slots
+            self.thread.started.connect(self.worker.run)
+            self.worker.finished.connect(self.thread.quit)
+            self.worker.finished.connect(self.worker.deleteLater)
+            self.thread.finished.connect(self.thread.deleteLater)
+            self.thread.finished.connect(self.set_thread_running_status)
+            self.worker.progress.connect(self.update_new_value)
+            # Step 6: Start the thread
+            self.thread_running = True
+            self.thread.start()
+    
+    def update_new_value(self, value):
+        self.new_value = value
+
+    def set_thread_running_status(self):
+        self.thread_running = False
+
 
     def update_chart(self):
-        # new_value = randint(0,50)
-        # new_value =  self.get_interval_emissions_method(self.cpu_tdp, self.co2_intesity, self.time_interval) # this line makes the plot very slow and heavy, because of cpu.get_cpu_usage(time_frequency). Might be better to use two scripts -> one that writes data in a file, one that reads data from the file for plotting
-        new_value = self.new_value
         self.y = self.y[1:]
-        self.y = np.append(self.y, new_value)
+        self.y = np.append(self.y, self.new_value)
 
         if self.line_plot:
             self.line_plot[0].remove()
         self.line_plot = self.ax.plot(self.x,self.y, color='g')
+        # self.ax.set_ylim([0, self.y[-20:].max()])
         self.canvas.draw()
+
+
+class MyDataCollectorWorker(QObject):
+    finished = pyqtSignal()
+    progress = pyqtSignal(float)
+
+    def __init__(self, cpu_tdp, co2_intensity, time_interval, get_interval_emissions_method):
+        super().__init__()
+        self.get_interval_emissions_method = get_interval_emissions_method
+        self.cpu_tdp = cpu_tdp
+        self.co2_intesity = co2_intensity
+        self.time_interval = time_interval
+
+    def run(self):
+        """Long-running task."""
+        
+        value = self.get_interval_emissions_method(self.cpu_tdp, self.co2_intesity, self.time_interval)
+        #value = randint(0,50)
+        self.progress.emit(value)
+        self.finished.emit()
+
+
+
 
 if __name__ == '__main__':
     # don't auto scale when drag app to a different monitor.
@@ -82,7 +131,7 @@ if __name__ == '__main__':
         }
     ''')
     
-    myApp = MyApp(15, 400, lambda x,y,z : randint(0,10))
+    myApp = MyApp(15, 400, 1, lambda x,y,z : randint(0,10))
     myApp.show()
 
     try:
