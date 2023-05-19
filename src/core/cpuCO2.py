@@ -1,7 +1,7 @@
 from utils import api_calls, cpu
 from PyQt5.QtWidgets import QApplication
 import sys
-from core.gui import MyApp
+from core.gui import PlotWindowApp
 
 def cpu_co2(country_code = None) -> None:
     """Function to run the core of the app: compare CPU usage with CO2 emissions"""
@@ -47,7 +47,7 @@ def cpu_co2(country_code = None) -> None:
                 font-size: 30px;
             }
         ''')
-        myApp = MyApp(cpu.get_cpu_tdp(), carbon_intensity, cpu_retrieval_time, get_interval_emissions)
+        myApp = PlotWindowApp(cpu.get_cpu_tdp(), carbon_intensity, cpu_retrieval_time, get_interval_emissions, num_x_points=200, num_x_ticks=5, unit_measurement="m")
         myApp.show()
         print('\nPlot window in execution...')
         try:
