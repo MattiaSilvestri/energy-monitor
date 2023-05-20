@@ -95,8 +95,8 @@ def get_interval_emissions(cpu_tdp: int, co2_intensity: float, time_frequency: i
     :type cpu_tdp: int
     :param co2_intensity: carbon intensity value for the selected country
     :type co2_intensity: float
-    :param usage_time: frequency of CPU usage estimation in seconds
-    :type usage_time: int
+    :param time_frequency: frequency of CPU usage estimation in seconds
+    :type time_frequency: int
     :return: grams of CO2 emitted for your CPU usage in the specified time
     :rtype: float
     """
