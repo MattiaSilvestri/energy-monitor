@@ -37,13 +37,15 @@ class PlotWindowApp(QWidget):
         # self.setMinimumSize(self.window_width, self.window_height)
         layout = QVBoxLayout()
         self.setLayout(layout)
-        self.canvas = FigureCanvas(plt.Figure(figsize=(15, 3)))
+        fig = plt.Figure(figsize=(15, 3))
+        fig.tight_layout()
+        self.canvas = FigureCanvas(fig)
         layout.addWidget(self.canvas)
 
     def insert_ax(self):
         font = {
             'weight': 'normal',
-            'size': 16
+            'size': 10
         }
         matplotlib.rc('font', **font)
 
@@ -54,6 +56,7 @@ class PlotWindowApp(QWidget):
         self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}s", fontsize="small", rotation="horizontal", horizontalalignment="right")
         self.ax.set_xlabel("Time")
         self.line_plot = None
+        self.ax.set_position([0.1, 0.2, 0.85, 0.75]) #left,bottom,width,height 
 
     def connect_timer(self):
         # connect timer to cyclic functions
@@ -133,7 +136,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyleSheet('''
         QWidget {
-            font-size: 30px;
+            font-size: 20px;
         }
     ''')
 
