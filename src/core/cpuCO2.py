@@ -47,7 +47,8 @@ def cpu_co2(country_code = None) -> None:
                 font-size: 30px;
             }
         ''')
-        myApp = PlotWindowApp(cpu.get_cpu_tdp(), carbon_intensity, cpu_retrieval_time, get_interval_emissions, num_x_points=200, num_x_ticks=5, x_unit_measurement="m", y_unit_measurement="h")
+        myApp = PlotWindowApp(cpu.get_cpu_tdp(), carbon_intensity, cpu_retrieval_time, get_interval_emissions, 
+                              num_x_points=200, num_x_ticks=5, x_unit_measurement="m", y_unit_measurement="h")
         myApp.show()
         print('\nPlot window in execution...')
         try:
