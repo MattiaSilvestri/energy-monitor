@@ -37,7 +37,7 @@ def cpu_co2(country_code = None) -> None:
 
         # Combine Co2 with CPU usage
         print('\nCombining Co2 and CPU data...')
-        co2_emissions = combine_cpu_CO2(cpu_usage, cpu_retrieval_time, cpu.get_cpu_tdp(), carbon_intensity)
+        co2_emissions = combine_cpu_CO2(cpu_usage, cpu_retrieval_time, cpu.get_cpu_tdp(cpu_info), carbon_intensity)
         print("- In the last {0} seconds your CPU footprint was: {1} g".format(cpu_retrieval_time, co2_emissions))
 
         # Launch plot
@@ -47,7 +47,7 @@ def cpu_co2(country_code = None) -> None:
                 font-size: 30px;
             }
         ''')
-        myApp = PlotWindowApp(cpu.get_cpu_tdp(), carbon_intensity, cpu_retrieval_time, get_interval_emissions, 
+        myApp = PlotWindowApp(cpu.get_cpu_tdp(cpu_info), carbon_intensity, cpu_retrieval_time, get_interval_emissions, 
                               num_x_points=200, num_x_ticks=5, x_unit_measurement="m", y_unit_measurement="h")
         myApp.show()
         print('\nPlot window in execution...')
