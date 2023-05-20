@@ -24,11 +24,13 @@ class PlotWindowApp(QWidget):
     :type num_x_points: int
     :param num_x_ticks: number of ticks to be set in the x-axis
     :type num_x_ticks: int
-    :param unit_measurement: letter corresponding to the unit of measurement for the x-axis (s: seconds, m: minutes, h:hours)
-    :type unit_measurement: str
+    :param x_unit_measurement: letter corresponding to the unit of measurement for the x-axis (s: seconds, m: minutes, h:hours)
+    :type x_unit_measurement: str
+    :param y_unit_measurement: letter corresponding to the unit of measurement for the y-axis (s: seconds, m: minutes, h:hours)
+    :type y_unit_measurement: str
     
     '''
-    def __init__(self, cpu_tdp, co2_intensity, time_interval, get_interval_emissions_method, num_x_points, num_x_ticks, unit_measurement):
+    def __init__(self, cpu_tdp, co2_intensity, time_interval, get_interval_emissions_method, num_x_points, num_x_ticks, x_unit_measurement, y_unit_measurement):
         super().__init__()
 
         # initialize attributes
@@ -38,9 +40,20 @@ class PlotWindowApp(QWidget):
         self.cpu_tdp = cpu_tdp
         self.num_x_points = num_x_points
         self.num_x_ticks = num_x_ticks
-        self.unit_measurement = unit_measurement
+        self.x_unit_measurement = x_unit_measurement
+        self.y_unit_measurement = y_unit_measurement
         self.thread_running = False
         self.new_value = 0
+
+        # find y unit of measurement multiplier
+        if y_unit_measurement == "s":
+            self.y_unit_multiplier = 1
+        elif y_unit_measurement == "m":
+            self.y_unit_multiplier = 60
+        elif y_unit_measurement == "h":
+            self.y_unit_multiplier = 3600
+        else:
+            raise ValueError("Please enter a valid unit of measure for the y-axis. Choose between 's', 'm' or 'h'.")
 
         # initialize initial graphs values
         self.x = np.arange(num_x_points)[::-1]*-1
@@ -76,8 +89,8 @@ class PlotWindowApp(QWidget):
         # create a matplotlib line plot structure
         self.ax = self.canvas.figure.subplots()
         self.ax.set_xlim([-self.num_x_points, 0])
-        self.set_labels_ticks(unit_measurement=self.unit_measurement, num_ticks=self.num_x_ticks)
-        self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}s", fontsize="small", rotation="horizontal", horizontalalignment="right")
+        self.set_labels_ticks(x_unit_measurement=self.x_unit_measurement, num_ticks=self.num_x_ticks)
+        self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}{self.y_unit_measurement}", fontsize="small", rotation="horizontal", horizontalalignment="right")
         self.ax.set_xlabel("Time")
         self.line_plot = None
         self.ax.set_position([0.1, 0.2, 0.85, 0.7]) #left,bottom,width,height 
@@ -124,7 +137,7 @@ class PlotWindowApp(QWidget):
         :param value: equivalent co2 emission just computed by the worker
         :type value: float
         '''
-        self.new_value = value
+        self.new_value = value * self.y_unit_multiplier
 
     def update_chart(self):
         '''
@@ -140,26 +153,26 @@ class PlotWindowApp(QWidget):
         self.line_plot = self.ax.plot(self.x,self.y, color='g')
         self.canvas.draw()
 
-    def set_labels_ticks(self, num_ticks, unit_measurement):
+    def set_labels_ticks(self, num_ticks, x_unit_measurement):
         '''
         This method find the correct labels to be set in the x-axis according to the prefered unit of measurement and number of ticks.
 
         :param num_ticks: number of ticks to be set in the x-axis
         :type num_ticks: int
-        :param unit_measurement: letter corresponding to the unit of measurement for the x-axis (s: seconds, m: minutes, h:hours)
-        :type unit_measurement: str
+        :param x_unit_measurement: letter corresponding to the unit of measurement for the x-axis (s: seconds, m: minutes, h:hours)
+        :type x_unit_measurement: str
         '''  
-        if unit_measurement == "s":
+        if x_unit_measurement == "s":
             labels_all = self.x * self.time_interval
-        elif unit_measurement == "m":
+        elif x_unit_measurement == "m":
             labels_all = self.x * self.time_interval / 60
-        elif unit_measurement == "h":
+        elif x_unit_measurement == "h":
             labels_all = self.x * self.time_interval / 3600
         else:
-            raise ValueError("Please enter a valid unit of measure. Choose between 's', 'm' or 'h'.")
+            raise ValueError("Please enter a valid unit of measure for the x-axis. Choose between 's', 'm' or 'h'.")
         ticks = np.linspace(self.x[0],self.x[-1], num_ticks)
         labels = labels_all[np.linspace(0,len(labels_all)-1, num_ticks).astype(int)]
-        labels_ticks = [str(round(element, 1))+unit_measurement for element in list(labels)]
+        labels_ticks = [str(round(element, 1))+x_unit_measurement for element in list(labels)]
         self.ax.set_xticks(ticks, labels_ticks)
 
 
@@ -206,7 +219,8 @@ if __name__ == '__main__':
         }
     ''')
 
-    myApp = PlotWindowApp(cpu_tdp=15, co2_intensity=400, time_interval=1, get_interval_emissions_method=lambda x,y,z : randint(0,10), num_x_points=200, num_x_ticks=5, unit_measurement="m")
+    myApp = PlotWindowApp(cpu_tdp=15, co2_intensity=400, time_interval=1, get_interval_emissions_method=lambda x,y,z : randint(0,10), 
+                          num_x_points=200, num_x_ticks=5, x_unit_measurement="m", y_unit_measurement="s")
     myApp.show()
 
     try:
