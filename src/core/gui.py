@@ -88,10 +88,10 @@ class PlotWindowApp(QWidget):
 
         # create a matplotlib line plot structure
         self.ax = self.canvas.figure.subplots()
-        self.ax.set_xlim([-self.num_x_points, 0])
+        self.ax.set_xlim([-self.num_x_points+1, 0])
         self.set_labels_ticks(x_unit_measurement=self.x_unit_measurement, num_ticks=self.num_x_ticks)
         self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}{self.y_unit_measurement}", fontsize="small", rotation="horizontal", horizontalalignment="right")
-        self.ax.set_xlabel("Time")
+        self.ax.set_xlabel(f"Time ({self.x_unit_measurement})")
         self.line_plot = None
         self.ax.set_position([0.1, 0.2, 0.85, 0.7]) #left,bottom,width,height
         self.ax.grid(color='b', linestyle='-', linewidth=0.1)
@@ -178,7 +178,7 @@ class PlotWindowApp(QWidget):
             raise ValueError("Please enter a valid unit of measure for the x-axis. Choose between 's', 'm' or 'h'.")
         ticks = np.linspace(self.x[0],self.x[-1], num_ticks)
         labels = labels_all[np.linspace(0,len(labels_all)-1, num_ticks).astype(int)]
-        labels_ticks = [str(round(element, 1))+x_unit_measurement for element in list(labels)]
+        labels_ticks = [str(round(element, 1)) for element in list(labels)]
         self.ax.set_xticks(ticks, labels_ticks)
 
 
