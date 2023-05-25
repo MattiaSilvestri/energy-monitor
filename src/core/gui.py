@@ -90,7 +90,7 @@ class PlotWindowApp(QWidget):
         self.ax = self.canvas.figure.subplots()
         self.ax.set_xlim([-self.num_x_points+1, 0])
         self.set_labels_ticks(x_unit_measurement=self.x_unit_measurement, num_ticks=self.num_x_ticks)
-        self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}{self.y_unit_measurement}", fontsize="small", rotation="horizontal", horizontalalignment="right")
+        self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}{self.y_unit_measurement}", fontsize="small", horizontalalignment="right")
         self.ax.set_xlabel(f"Time ({self.x_unit_measurement})")
         self.line_plot = None
         self.ax.set_position([0.1, 0.2, 0.85, 0.7]) #left,bottom,width,height
