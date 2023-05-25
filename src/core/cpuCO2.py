@@ -29,16 +29,10 @@ def cpu_co2(country_code = None) -> None:
         print("- Selected Country: {0} \n- Carbon Intensity: {1} ({2}) \n- Percentage of fossil fuel: {3}%".format(country_code, carbon_intensity, carbon_intensity_unit, fossil_percentage))
 
         # Retrieve cpu info
+        print('\nRetrieving CPU data...')
         cpu_retrieval_time = 1 #to export in a configuration file
-        print(f'\nRetrieving CPU usage of the next {cpu_retrieval_time} seconds...')
         cpu_info = cpu.get_cpu_info()
-        cpu_usage = cpu.get_cpu_usage(cpu_retrieval_time) #it seems too low to be true!
-        print("- Current CPU: {0} \n- CPU usage during last 10s: {1}%".format(cpu_info, cpu_usage))
-
-        # Combine Co2 with CPU usage
-        print('\nCombining Co2 and CPU data...')
-        co2_emissions = combine_cpu_CO2(cpu_usage, cpu_retrieval_time, cpu.get_cpu_tdp(cpu_info), carbon_intensity)
-        print("- In the last {0} seconds your CPU footprint was: {1} g".format(cpu_retrieval_time, co2_emissions))
+        print("- Current CPU: {0}".format(cpu_info))
 
         # Launch plot
         app = QApplication(sys.argv)
