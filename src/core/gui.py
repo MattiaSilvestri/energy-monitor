@@ -93,7 +93,8 @@ class PlotWindowApp(QWidget):
         self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}{self.y_unit_measurement}", fontsize="small", rotation="horizontal", horizontalalignment="right")
         self.ax.set_xlabel("Time")
         self.line_plot = None
-        self.ax.set_position([0.1, 0.2, 0.85, 0.7]) #left,bottom,width,height 
+        self.ax.set_position([0.1, 0.2, 0.85, 0.7]) #left,bottom,width,height
+        self.ax.grid(color='b', linestyle='-', linewidth=0.1)
 
     def connect_timer(self):
         '''
@@ -147,10 +148,15 @@ class PlotWindowApp(QWidget):
         self.y = self.y[1:]
         self.y = np.append(self.y, self.new_value)
 
+        # fill area under the line
+        if self.ax.collections:
+            self.ax.collections[0].remove()
+        self.ax.fill_between(self.x,self.y, 0, color='blue', alpha=.1)
+        
         # display updated plot
         if self.line_plot:
             self.line_plot[0].remove()
-        self.line_plot = self.ax.plot(self.x,self.y, color='g')
+        self.line_plot = self.ax.plot(self.x,self.y, color='#1560BD', alpha=.8)
         self.canvas.draw()
 
     def set_labels_ticks(self, num_ticks, x_unit_measurement):
