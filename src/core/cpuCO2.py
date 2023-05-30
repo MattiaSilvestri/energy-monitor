@@ -48,7 +48,8 @@ def cpu_co2(country_code = None) -> None:
         try:
             sys.exit(app.exec_())
         except SystemExit:
-            print('Closing Window...')
+            print('Closing Window and Saving Results...')
+            myApp.save_log("prova_log.txt")
 
     except KeyError:
         print('Sorry, your country is not present in the Electricity Map ' +

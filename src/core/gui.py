@@ -1,4 +1,6 @@
 import sys
+import os
+from pathlib import Path
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
 from PyQt5.QtCore import QTimer, QObject, QThread, pyqtSignal
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -43,7 +45,6 @@ class PlotWindowApp(QWidget):
         self.x_unit_measurement = x_unit_measurement
         self.y_unit_measurement = y_unit_measurement
         self.thread_running = False
-        self.new_value = 0
 
         # find y unit of measurement multiplier
         match y_unit_measurement:
@@ -139,25 +140,25 @@ class PlotWindowApp(QWidget):
         :param value: equivalent co2 emission just computed by the worker
         :type value: float
         '''
-        self.new_value = value * self.y_unit_multiplier
+        new_value = value * self.y_unit_multiplier
+        self.y = np.append(self.y, new_value)
 
     def update_chart(self):
         '''
         This method update the data points to be plotted and display the new plot.
         '''  
         # update data to plot
-        self.y = self.y[1:]
-        self.y = np.append(self.y, self.new_value)
+        y_to_plot = self.y[-self.num_x_points:]
 
         # fill area under the line
         if self.ax.collections:
             self.ax.collections[0].remove()
-        self.ax.fill_between(self.x,self.y, 0, color='blue', alpha=.1) # TODO: add to config
+        self.ax.fill_between(self.x, y_to_plot, 0, color='blue', alpha=.1)
         
         # display updated plot
         if self.line_plot:
             self.line_plot[0].remove()
-        self.line_plot = self.ax.plot(self.x,self.y, color='#1560BD', alpha=.8) # TODO: add to config
+        self.line_plot = self.ax.plot(self.x, y_to_plot, color='#1560BD', alpha=.8)
         self.canvas.draw()
 
     def set_labels_ticks(self, num_ticks, x_unit_measurement):
@@ -182,7 +183,24 @@ class PlotWindowApp(QWidget):
         labels = labels_all[np.linspace(0,len(labels_all)-1, num_ticks).astype(int)]
         labels_ticks = [str(round(element, 1)) for element in list(labels)]
         self.ax.set_xticks(ticks, labels_ticks)
+    
+    def save_log(self, filename):
+        '''
+        '''
+        # remove leading zeros from data
+        y_to_save = np.trim_zeros(self.y)
 
+        # get current file path
+        current_file_path = Path(os.path.realpath(__file__))
+
+        # get package root path
+        data_path = os.path.join(current_file_path.parent.absolute().parent.absolute().parent.absolute(), "data")
+
+        # save data to txt file
+        np.savetxt(os.path.join(data_path,filename), y_to_save)
+
+        
+        
 
 class MyDataCollectorWorker(QObject):
     '''
@@ -234,4 +252,6 @@ if __name__ == '__main__':
     try:
         sys.exit(app.exec_())
     except SystemExit:
+
+        myApp.save_log("prova_log.txt")
         print('Closing Window...')
