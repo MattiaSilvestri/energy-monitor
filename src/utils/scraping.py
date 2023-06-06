@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import json
 import os
+import sys
 import re
 import requests
 from selenium import webdriver
@@ -23,7 +24,12 @@ def chrome_browser_setup():
     options.add_argument('log-level=1')    
     # Disable popup
     options.add_argument("--headless")
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+
+    if getattr(sys, 'frozen', False):
+        chromedriver_path = os.path.join(sys._MEIPASS, "./data/chromedriver")
+        driver = webdriver.Chrome(chromedriver_path, options=options)
+    else:
+        driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
     return driver
 
