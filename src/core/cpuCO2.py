@@ -97,7 +97,7 @@ def get_interval_emissions(cpu_tdp: int, co2_intensity: float, time_frequency: i
     """
 
     # Retrieve cpu usage
-    cpu_usage = cpu.get_cpu_usage(time_frequency)
+    cpu_usage = cpu.get_cpu_usage(time_frequency-0.05)
 
     # Combine Co2 with CPU usage
     co2_emissions = combine_cpu_CO2(cpu_usage, time_frequency, cpu_tdp, co2_intensity)
