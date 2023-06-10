@@ -194,7 +194,9 @@ class PlotWindowApp(QWidget):
         current_file_path = Path(os.path.realpath(__file__))
 
         # get package root path
-        data_path = os.path.join(current_file_path.parent.absolute().parent.absolute().parent.absolute(), "data")
+        data_path = os.path.join(current_file_path.parent.absolute().parent.absolute().parent.absolute(), "data/userdata")
+        if not os.path.exists(data_path):
+            os.makedirs(data_path)
 
         # save data to txt file
         np.savetxt(os.path.join(data_path,filename), y_to_save)
