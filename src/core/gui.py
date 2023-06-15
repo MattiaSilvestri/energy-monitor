@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 from random import randint
+import datetime
 
 # Plot Class
 class PlotWindowApp(QWidget):
@@ -184,9 +185,11 @@ class PlotWindowApp(QWidget):
         labels_ticks = [str(round(element, 1)) for element in list(labels)]
         self.ax.set_xticks(ticks, labels_ticks)
     
-    def save_log(self, filename):
+    def save_log(self):
         '''
+        This method saves all the data gathered during the last session to a txt log file.
         '''
+
         # remove leading zeros from data
         y_to_save = np.trim_zeros(self.y)
 
@@ -197,6 +200,9 @@ class PlotWindowApp(QWidget):
         data_path = os.path.join(current_file_path.parent.absolute().parent.absolute().parent.absolute(), "data/userdata")
         if not os.path.exists(data_path):
             os.makedirs(data_path)
+
+        # get now string
+        filename = "log_" + str(datetime.datetime.now()).split(".")[0].replace(":", "-").replace(" ", "_")
 
         # save data to txt file
         np.savetxt(os.path.join(data_path,filename), y_to_save)
@@ -255,5 +261,5 @@ if __name__ == '__main__':
         sys.exit(app.exec_())
     except SystemExit:
 
-        myApp.save_log("prova_log.txt")
+        myApp.save_log()
         print('Closing Window...')
