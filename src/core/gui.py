@@ -46,14 +46,15 @@ class PlotWindowApp(QWidget):
         self.new_value = 0
 
         # find y unit of measurement multiplier
-        if y_unit_measurement == "s":
-            self.y_unit_multiplier = 1
-        elif y_unit_measurement == "m":
-            self.y_unit_multiplier = 60
-        elif y_unit_measurement == "h":
-            self.y_unit_multiplier = 3600
-        else:
-            raise ValueError("Please enter a valid unit of measure for the y-axis. Choose between 's', 'm' or 'h'.")
+        match y_unit_measurement:
+            case "s":
+                self.y_unit_multiplier = 1
+            case "m":
+                self.y_unit_multiplier = 60
+            case "h":
+                self.y_unit_multiplier = 3600
+            case _:
+                raise ValueError("Please enter a valid unit of measure for the y-axis. Choose between 's', 'm' or 'h'.")
 
         # initialize initial graphs values
         self.x = np.arange(num_x_points)[::-1]*-1
@@ -168,14 +169,15 @@ class PlotWindowApp(QWidget):
         :param x_unit_measurement: letter corresponding to the unit of measurement for the x-axis (s: seconds, m: minutes, h:hours)
         :type x_unit_measurement: str
         '''  
-        if x_unit_measurement == "s":
-            labels_all = self.x * self.time_interval
-        elif x_unit_measurement == "m":
-            labels_all = self.x * self.time_interval / 60
-        elif x_unit_measurement == "h":
-            labels_all = self.x * self.time_interval / 3600
-        else:
-            raise ValueError("Please enter a valid unit of measure for the x-axis. Choose between 's', 'm' or 'h'.")
+        match x_unit_measurement:
+            case "s":
+                labels_all = self.x * self.time_interval
+            case "m":
+                labels_all = self.x * self.time_interval / 60
+            case "h":
+                labels_all = self.x * self.time_interval / 3600
+            case _:
+                raise ValueError("Please enter a valid unit of measure for the x-axis. Choose between 's', 'm' or 'h'.")
         ticks = np.linspace(self.x[0],self.x[-1], num_ticks)
         labels = labels_all[np.linspace(0,len(labels_all)-1, num_ticks).astype(int)]
         labels_ticks = [str(round(element, 1)) for element in list(labels)]
