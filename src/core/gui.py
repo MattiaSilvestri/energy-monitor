@@ -84,7 +84,7 @@ class PlotWindowApp(QWidget):
         font = {
             'weight': 'normal',
             'size': 10
-        }
+        } # TODO: add to config
         matplotlib.rc('font', **font)
 
         # create a matplotlib line plot structure
@@ -94,8 +94,8 @@ class PlotWindowApp(QWidget):
         self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}{self.y_unit_measurement}", fontsize="small", horizontalalignment="right")
         self.ax.set_xlabel(f"Time ({self.x_unit_measurement})")
         self.line_plot = None
-        self.ax.set_position([0.1, 0.2, 0.85, 0.7]) #left,bottom,width,height
-        self.ax.grid(color='b', linestyle='-', linewidth=0.1)
+        self.ax.set_position([0.1, 0.2, 0.85, 0.7]) #left,bottom,width,height # TODO: add to config
+        self.ax.grid(color='b', linestyle='-', linewidth=0.1) # TODO: add to config
 
     def connect_timer(self):
         '''
@@ -152,12 +152,12 @@ class PlotWindowApp(QWidget):
         # fill area under the line
         if self.ax.collections:
             self.ax.collections[0].remove()
-        self.ax.fill_between(self.x,self.y, 0, color='blue', alpha=.1)
+        self.ax.fill_between(self.x,self.y, 0, color='blue', alpha=.1) # TODO: add to config
         
         # display updated plot
         if self.line_plot:
             self.line_plot[0].remove()
-        self.line_plot = self.ax.plot(self.x,self.y, color='#1560BD', alpha=.8)
+        self.line_plot = self.ax.plot(self.x,self.y, color='#1560BD', alpha=.8) # TODO: add to config
         self.canvas.draw()
 
     def set_labels_ticks(self, num_ticks, x_unit_measurement):
