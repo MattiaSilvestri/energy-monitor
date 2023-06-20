@@ -2,6 +2,14 @@ Paths:
 
 
 Functional:
+  cpu_retrieval_time: 1 #seconds
+  cpu_retrieval_time_decrement: 0.05 #seconds
+  co2_emissions_precision: 6 #decimals
 
 
 Appearance:
+  window_font_size: 30 #pixels
+  num_x_axes_points: 200 #points
+  num_x_ticks: 5 #ticks
+  x_unit_measurement: "m" #s:seconds, m:minutes, h:hours
+  y_unit_measurement: "h" #s:seconds, m:minutes, h:hours
