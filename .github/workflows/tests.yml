@@ -19,18 +19,20 @@ jobs:
         python-version: '3.10.8'
     - name: Install dependencies
       run: pip install -r requirements.txt
-
-  pytest:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
     - name: Run tests
       run: pytest
 
-  lint:
-    needs: setup
+  pytest:
     runs-on: ubuntu-latest
+    needs: setup
+    steps:
+    - name: Run tests
+      run: pytest
+      
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: setup
     steps:
     - name: Run mypy
       run: mypy src/
