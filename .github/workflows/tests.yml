@@ -19,8 +19,6 @@ jobs:
         python-version: '3.10.8'
     - name: Install dependencies
       run: pip install -r requirements.txt
-    - name: Load environment variables
-      run: source .env
 
   pytest:
     needs: setup
