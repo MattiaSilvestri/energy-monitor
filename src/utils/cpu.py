@@ -1,4 +1,4 @@
-import cpuinfo
+import cpuinfo # type: ignore
 import json
 import os
 import psutil
@@ -10,7 +10,6 @@ from utils.scraping import scrape_tdp_intel, get_AMD_database
 def get_cpu_info() -> str:
     """
     Return info regarding CPU model installed.
-
     :return: Info regarding CPU model installed
     :rtype: str
     """
@@ -23,21 +22,16 @@ def get_cpu_info() -> str:
     return cpu_info
 
 
-
-def get_cpu_usage(seconds: float) -> float or None:
+def get_cpu_usage(seconds: float) -> float:
     """
     Return the average CPU usage over a time interval period.
 
     :param seconds: Time interval period considered
     :type seconds: float
     :return: CPU usage percentage
-    :rtype: float or None
+    :rtype: float 
     """
-
-    try:
-        cpu_percentage = psutil.cpu_percent(seconds)
-    except:
-        cpu_percentage = None
+    cpu_percentage = psutil.cpu_percent(seconds)
         
     return cpu_percentage
 
