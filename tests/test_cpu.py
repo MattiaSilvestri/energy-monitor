@@ -22,7 +22,7 @@ def test_get_cpu_usage():
 
 def test_get_cpu_tdp():
     # Call the function with a known CPU name
-    cpu_name = get_cpu_info()
+    cpu_name = 'Intel(R) Core(TM) i7-8569U CPU @ 2.80GHz'
     tdp = get_cpu_tdp(cpu_name)
 
     # Check that the result is a float
