@@ -3,6 +3,7 @@ import json
 import os
 import psutil
 import re
+import sys
 from utils.scraping import scrape_tdp_intel, get_AMD_database
 
 
@@ -36,7 +37,7 @@ def get_cpu_usage(seconds: float) -> float or None:
     try:
         cpu_percentage = psutil.cpu_percent(seconds)
     except:
-        cpu_percentage= None
+        cpu_percentage = None
         
     return cpu_percentage
 
@@ -49,11 +50,14 @@ def get_cpu_tdp(cpu_name: str) -> float:
     :return: CPU Thermal Design Power (TDP) in watts
     :rtype: float
     """
+    # check that the input is a string otherwise raise a ValueError
+    if not isinstance(cpu_name, str):
+        raise ValueError("Input must be a string")
     # get the path to the data folder
     path = [x[0] for x in os.walk('..') if 'data' in x[0]][0]
     # define file name of the output file
     json_fname = os.path.join(path, 'cpu_tdp.json')
-    if os.path.isfile(json_fname):
+    if os.path.isfile(json_fname) and not 'pytest' in sys.modules:
         # load json file with the cpu tdp info
         with open(json_fname, 'r') as f:
             tdp = json.load(f)['tdp']
