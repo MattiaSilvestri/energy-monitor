@@ -54,6 +54,6 @@ def test_get_request_co2signal():
         assert isinstance(output['units']['carbonIntensity'], str)
         assert isinstance(output['status'], str)
         # check that the country code is correct
-        assert 'IT' in output['countryCode'] 
+        assert 'IT' in output['countryCode']
 
 
