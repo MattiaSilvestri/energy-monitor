@@ -9,6 +9,7 @@ from random import randint
 import yaml
 import os
 
+
 # Plot Class
 class PlotWindowApp(QWidget):
     '''
@@ -32,11 +33,7 @@ class PlotWindowApp(QWidget):
     :type y_unit_measurement: str
     
     '''
-    def __init__(self, cpu_tdp, co2_intensity, time_interval, get_interval_emissions_method, 
-                 num_x_points=200, num_x_ticks=5, x_unit_measurement='m', y_unit_measurement='h',
-                 plot_font_size=10, plot_font_weight='normal', plot_position=[0.1, 0.2, 0.85, 0.7],
-                 plot_grid_line_color='b', plot_grid_line_style='-', plot_grid_line_width=0.1,
-                 plot_line_color='#1560BD', plot_line_alpha=0.8, plot_area_color='blue', plot_area_alpha=0.1):
+    def __init__(self, cpu_tdp, co2_intensity, time_interval, get_interval_emissions_method, appearance_params):
         super().__init__()
 
         # initialize attributes
@@ -44,25 +41,25 @@ class PlotWindowApp(QWidget):
         self.time_interval = time_interval
         self.co2_intesity = co2_intensity
         self.cpu_tdp = cpu_tdp
-        self.num_x_points = num_x_points
-        self.num_x_ticks = num_x_ticks
-        self.x_unit_measurement = x_unit_measurement
-        self.y_unit_measurement = y_unit_measurement
-        self.plot_font_size = plot_font_size
-        self.plot_font_weight = plot_font_weight
-        self.plot_position = plot_position
-        self.plot_grid_line_color = plot_grid_line_color
-        self.plot_grid_line_style = plot_grid_line_style
-        self.plot_grid_line_width = plot_grid_line_width
-        self.plot_line_color = plot_line_color
-        self.plot_line_alpha = plot_line_alpha
-        self.plot_area_color = plot_area_color
-        self.plot_area_alpha = plot_area_alpha
+        self.plot_position = appearance_params['Window']['plot_position']
+        self.num_x_points = appearance_params['Plot']['num_x_points']
+        self.num_x_ticks = appearance_params['Plot']['num_x_ticks']
+        self.x_unit_measurement = appearance_params['Plot']['x_unit_measurement']
+        self.y_unit_measurement = appearance_params['Plot']['y_unit_measurement']
+        self.plot_font_size = appearance_params['Plot']['font_size']
+        self.plot_font_weight = appearance_params['Plot']['font_weight']
+        self.plot_grid_line_color = appearance_params['Plot']['grid_line_color']
+        self.plot_grid_line_style = appearance_params['Plot']['grid_line_style']
+        self.plot_grid_line_width = appearance_params['Plot']['grid_line_width']
+        self.plot_line_color = appearance_params['Plot']['line_color']
+        self.plot_line_alpha = appearance_params['Plot']['line_alpha']
+        self.plot_area_color = appearance_params['Plot']['area_color']
+        self.plot_area_alpha = appearance_params['Plot']['area_alpha']
         self.thread_running = False
         self.new_value = 0
 
         # find y unit of measurement multiplier
-        match y_unit_measurement:
+        match self.y_unit_measurement:
             case "s":
                 self.y_unit_multiplier = 1
             case "m":
@@ -73,7 +70,7 @@ class PlotWindowApp(QWidget):
                 raise ValueError("Please enter a valid unit of measure for the y-axis. Choose between 's', 'm' or 'h'.")
 
         # initialize initial graphs values
-        self.x = np.arange(num_x_points)[::-1]*-1
+        self.x = np.arange(self.num_x_points)[::-1]*-1
         self.y = self.x*0
 
         # call initialization methods
@@ -249,11 +246,7 @@ if __name__ == '__main__':
         }
     ''')
 
-    myApp = PlotWindowApp(cpu_tdp=15, co2_intensity=400, time_interval=1, get_interval_emissions_method=lambda x,y,z : randint(0,10), 
-                          num_x_points=config_appearence["num_x_axes_points"], num_x_ticks=config_appearence["num_x_ticks"], x_unit_measurement=config_appearence["x_unit_measurement"], 
-                              y_unit_measurement=config_appearence["y_unit_measurement"], plot_font_size=config_appearence["plot_font_size"], plot_font_weight=config_appearence["plot_font_weight"], plot_position=config_appearence["plot_position"],
-                              plot_grid_line_color=config_appearence["plot_grid_line_color"], plot_grid_line_style=config_appearence["plot_grid_line_style"], plot_grid_line_width=config_appearence["plot_grid_line_width"],
-                              plot_line_color=config_appearence["plot_line_color"], plot_line_alpha=config_appearence["plot_line_alpha"], plot_area_color=config_appearence["plot_area_color"], plot_area_alpha=config_appearence["plot_area_alpha"])
+    myApp = PlotWindowApp(cpu_tdp=15, co2_intensity=400, time_interval=1, get_interval_emissions_method=lambda x,y,z : randint(0,10), appearance_params=config_appearence)
     
     myApp.show()
 

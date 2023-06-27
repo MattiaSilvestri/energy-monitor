@@ -49,13 +49,9 @@ def cpu_co2(country_code = None) -> None:
             QWidget {{
                 font-size: {int}px;
             }}
-        '''.format(int=config_appearence["window_font_size"])
+        '''.format(int=config_appearence['Window']["window_font_size"])
         app.setStyleSheet(qwidget_params)
-        myApp = PlotWindowApp(cpu.get_cpu_tdp(cpu_info), carbon_intensity, cpu_retrieval_time, get_interval_emissions, 
-                              num_x_points=config_appearence["num_x_axes_points"], num_x_ticks=config_appearence["num_x_ticks"], x_unit_measurement=config_appearence["x_unit_measurement"], 
-                              y_unit_measurement=config_appearence["y_unit_measurement"], plot_font_size=config_appearence["plot_font_size"], plot_font_weight=config_appearence["plot_font_weight"], plot_position=config_appearence["plot_position"],
-                              plot_grid_line_color=config_appearence["plot_grid_line_color"], plot_grid_line_style=config_appearence["plot_grid_line_style"], plot_grid_line_width=config_appearence["plot_grid_line_width"],
-                              plot_line_color=config_appearence["plot_line_color"], plot_line_alpha=config_appearence["plot_line_alpha"], plot_area_color=config_appearence["plot_area_color"], plot_area_alpha=config_appearence["plot_area_alpha"])
+        myApp = PlotWindowApp(cpu.get_cpu_tdp(cpu_info), carbon_intensity, cpu_retrieval_time, get_interval_emissions, config_appearence)
         myApp.show()
         print('\nPlot window in execution...')
         try:
