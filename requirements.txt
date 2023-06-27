@@ -53,4 +53,4 @@ types-html5lib==1.1.11
 types-requests==2.31.0
 PyQt5-stubs==5.15.6
 matplotlib-stubs==0.1.0
-types-urllib3-1.26.25
+types-urllib3==1.26.25
