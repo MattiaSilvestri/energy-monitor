@@ -50,6 +50,11 @@ def scrape_tdp_intel(cpu_name) -> float:
     :param cpu_name: CPU name, coming from get_cpu_info()
     :return: CPU Thermal Design Power (TDP) in watts
     """
+    if not isinstance(cpu_name, str):
+        raise ValueError("Input must be a string")
+    # check that the input string contains the manufacturer name
+    if not 'Intel' in cpu_name:
+        raise ValueError("Input must contain Intel")
     # initialize the webdriver
     driver = chrome_browser_setup()
     # open the intel website with selenium
