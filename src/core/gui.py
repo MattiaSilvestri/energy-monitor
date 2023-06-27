@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 from random import randint
+import yaml
+import os
 
 # Plot Class
 class PlotWindowApp(QWidget):
@@ -30,7 +32,11 @@ class PlotWindowApp(QWidget):
     :type y_unit_measurement: str
     
     '''
-    def __init__(self, cpu_tdp, co2_intensity, time_interval, get_interval_emissions_method, num_x_points, num_x_ticks, x_unit_measurement, y_unit_measurement):
+    def __init__(self, cpu_tdp, co2_intensity, time_interval, get_interval_emissions_method, 
+                 num_x_points=200, num_x_ticks=5, x_unit_measurement='m', y_unit_measurement='h',
+                 plot_font_size=10, plot_font_weight='normal', plot_position=[0.1, 0.2, 0.85, 0.7],
+                 plot_grid_line_color='b', plot_grid_line_style='-', plot_grid_line_width=0.1,
+                 plot_line_color='#1560BD', plot_line_alpha=0.8, plot_area_color='blue', plot_area_alpha=0.1):
         super().__init__()
 
         # initialize attributes
@@ -42,6 +48,16 @@ class PlotWindowApp(QWidget):
         self.num_x_ticks = num_x_ticks
         self.x_unit_measurement = x_unit_measurement
         self.y_unit_measurement = y_unit_measurement
+        self.plot_font_size = plot_font_size
+        self.plot_font_weight = plot_font_weight
+        self.plot_position = plot_position
+        self.plot_grid_line_color = plot_grid_line_color
+        self.plot_grid_line_style = plot_grid_line_style
+        self.plot_grid_line_width = plot_grid_line_width
+        self.plot_line_color = plot_line_color
+        self.plot_line_alpha = plot_line_alpha
+        self.plot_area_color = plot_area_color
+        self.plot_area_alpha = plot_area_alpha
         self.thread_running = False
         self.new_value = 0
 
@@ -82,9 +98,9 @@ class PlotWindowApp(QWidget):
         '''
         # define matplotlib font properties
         font = {
-            'weight': 'normal',
-            'size': 10
-        } # TODO: add to config
+            'weight': self.plot_font_weight,
+            'size': self.plot_font_size
+        }
         matplotlib.rc('font', **font)
 
         # create a matplotlib line plot structure
@@ -94,8 +110,8 @@ class PlotWindowApp(QWidget):
         self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}{self.y_unit_measurement}", fontsize="small", horizontalalignment="right")
         self.ax.set_xlabel(f"Time ({self.x_unit_measurement})")
         self.line_plot = None
-        self.ax.set_position([0.1, 0.2, 0.85, 0.7]) #left,bottom,width,height # TODO: add to config
-        self.ax.grid(color='b', linestyle='-', linewidth=0.1) # TODO: add to config
+        self.ax.set_position(self.plot_position)
+        self.ax.grid(color=self.plot_grid_line_color, linestyle=self.plot_grid_line_style, linewidth=self.plot_grid_line_width)
 
     def connect_timer(self):
         '''
@@ -152,12 +168,12 @@ class PlotWindowApp(QWidget):
         # fill area under the line
         if self.ax.collections:
             self.ax.collections[0].remove()
-        self.ax.fill_between(self.x,self.y, 0, color='blue', alpha=.1) # TODO: add to config
+        self.ax.fill_between(self.x,self.y, 0, color=self.plot_area_color, alpha=self.plot_area_alpha)
         
         # display updated plot
         if self.line_plot:
             self.line_plot[0].remove()
-        self.line_plot = self.ax.plot(self.x,self.y, color='#1560BD', alpha=.8) # TODO: add to config
+        self.line_plot = self.ax.plot(self.x,self.y, color=self.plot_line_color, alpha=self.plot_line_alpha)
         self.canvas.draw()
 
     def set_labels_ticks(self, num_ticks, x_unit_measurement):
@@ -219,6 +235,12 @@ class MyDataCollectorWorker(QObject):
 
 # Test the GUI with random numbers generation
 if __name__ == '__main__':
+
+    # Read YAML file 
+    config_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'config\config.yml')
+    with open(config_file_path, 'r') as stream:
+        config = yaml.safe_load(stream)
+    config_appearence = config["Appearance"]
     
     app = QApplication(sys.argv)
     app.setStyleSheet('''
@@ -228,7 +250,11 @@ if __name__ == '__main__':
     ''')
 
     myApp = PlotWindowApp(cpu_tdp=15, co2_intensity=400, time_interval=1, get_interval_emissions_method=lambda x,y,z : randint(0,10), 
-                          num_x_points=200, num_x_ticks=5, x_unit_measurement="m", y_unit_measurement="s")
+                          num_x_points=config_appearence["num_x_axes_points"], num_x_ticks=config_appearence["num_x_ticks"], x_unit_measurement=config_appearence["x_unit_measurement"], 
+                              y_unit_measurement=config_appearence["y_unit_measurement"], plot_font_size=config_appearence["plot_font_size"], plot_font_weight=config_appearence["plot_font_weight"], plot_position=config_appearence["plot_position"],
+                              plot_grid_line_color=config_appearence["plot_grid_line_color"], plot_grid_line_style=config_appearence["plot_grid_line_style"], plot_grid_line_width=config_appearence["plot_grid_line_width"],
+                              plot_line_color=config_appearence["plot_line_color"], plot_line_alpha=config_appearence["plot_line_alpha"], plot_area_color=config_appearence["plot_area_color"], plot_area_alpha=config_appearence["plot_area_alpha"])
+    
     myApp.show()
 
     try:

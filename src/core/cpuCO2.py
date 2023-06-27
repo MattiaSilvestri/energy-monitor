@@ -9,6 +9,7 @@ import os
 config_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'config\config.yml')
 with open(config_file_path, 'r') as stream:
     config = yaml.safe_load(stream)
+config_appearence = config["Appearance"]
 
 def cpu_co2(country_code = None) -> None:
     """Function to run the core of the app: compare CPU usage with CO2 emissions"""
@@ -48,11 +49,13 @@ def cpu_co2(country_code = None) -> None:
             QWidget {{
                 font-size: {int}px;
             }}
-        '''.format(int=config["Appearance"]["window_font_size"])
+        '''.format(int=config_appearence["window_font_size"])
         app.setStyleSheet(qwidget_params)
         myApp = PlotWindowApp(cpu.get_cpu_tdp(cpu_info), carbon_intensity, cpu_retrieval_time, get_interval_emissions, 
-                              num_x_points=config["Appearance"]["num_x_axes_points"], num_x_ticks=config["Appearance"]["num_x_ticks"], 
-                              x_unit_measurement=config["Appearance"]["x_unit_measurement"], y_unit_measurement=config["Appearance"]["y_unit_measurement"])
+                              num_x_points=config_appearence["num_x_axes_points"], num_x_ticks=config_appearence["num_x_ticks"], x_unit_measurement=config_appearence["x_unit_measurement"], 
+                              y_unit_measurement=config_appearence["y_unit_measurement"], plot_font_size=config_appearence["plot_font_size"], plot_font_weight=config_appearence["plot_font_weight"], plot_position=config_appearence["plot_position"],
+                              plot_grid_line_color=config_appearence["plot_grid_line_color"], plot_grid_line_style=config_appearence["plot_grid_line_style"], plot_grid_line_width=config_appearence["plot_grid_line_width"],
+                              plot_line_color=config_appearence["plot_line_color"], plot_line_alpha=config_appearence["plot_line_alpha"], plot_area_color=config_appearence["plot_area_color"], plot_area_alpha=config_appearence["plot_area_alpha"])
         myApp.show()
         print('\nPlot window in execution...')
         try:

@@ -1,3 +1,6 @@
+
+# TO CREATE HIERARCHY AFTER ALL PARAMETERS DEFINITION
+
 Paths:
 
 
@@ -8,8 +11,19 @@ Functional:
 
 
 Appearance:
-  window_font_size: 30 #pixels
   num_x_axes_points: 200 #points
   num_x_ticks: 5 #ticks
   x_unit_measurement: "m" #s:seconds, m:minutes, h:hours
   y_unit_measurement: "h" #s:seconds, m:minutes, h:hours
+  window_font_size: 30 #pixels
+  plot_font_size: 10 #pixels
+  plot_font_weight: 'normal'
+  plot_position: [0.1, 0.2, 0.85, 0.7] #normalized [left,bottom,width,height]
+  plot_grid_line_color: 'b'
+  plot_grid_line_style: '-'
+  plot_grid_line_width: 0.1
+  plot_line_color: '#1560BD'
+  plot_line_alpha: 0.8
+  plot_area_color: 'blue'
+  plot_area_alpha: 0.1
+
