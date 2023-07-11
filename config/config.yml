@@ -1,14 +1,7 @@
-
-# TO CREATE HIERARCHY AFTER ALL PARAMETERS DEFINITION
-
-Paths:
-
-
 Functional:
   cpu_retrieval_time: 1 #seconds
   cpu_retrieval_time_decrement: 0.05 #seconds
   co2_emissions_precision: 6 #decimals
-
 
 Appearance:
   Window:
@@ -28,4 +21,3 @@ Appearance:
     line_alpha: 0.8
     area_color: 'blue'
     area_alpha: 0.1
-
