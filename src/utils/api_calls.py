@@ -1,4 +1,12 @@
 import requests
+import yaml
+import os
+
+# Read YAML file 
+secrets_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'config\secrets.yml')
+with open(secrets_file_path, 'r') as stream:
+    secrets = yaml.safe_load(stream)
+
 
 def get_request_co2signal(lon = None, lat = None, countrycode = None):
     """
@@ -17,7 +25,7 @@ def get_request_co2signal(lon = None, lat = None, countrycode = None):
 
     # Initialize the request
     url = 'https://api.co2signal.com/v1/latest'
-    headers = {'auth-token': 'NjqWpnG2yaPL3gIaP9pPQeoFshLGd5Qo'}
+    headers = {'auth-token': secrets["API_keys"]["co2signal"]}
 
     if countrycode:
         params = {'countryCode': countrycode}
@@ -39,7 +47,7 @@ def get_location() -> dict:
     """
     # Initialize the request
     url = 'https://api.ipgeolocation.io/ipgeo'
-    params = {'apiKey': '640053f7cb87484bab9024592ee15d9d'}
+    params = {'apiKey': secrets["API_keys"]["ipgeolocation"]}
 
     # Perform the API call
     req = requests.get(url, params=params)
