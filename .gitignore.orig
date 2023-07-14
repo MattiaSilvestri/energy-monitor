@@ -1,0 +1,9 @@
+**/__pycache__
+<<<<<<< HEAD
+**/bin
+*.tar.gz
+/build/build
+/build/dist
+=======
+/data/cpu_tdp.json
+>>>>>>> refs/rewritten/onto

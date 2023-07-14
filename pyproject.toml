@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "energy-monitor"
+version = "0.0.1"
+authors = [
+  { name="Mattia Silvestri", email="mattiasilvestri27@gmail.com" },
+  { name="Francesco Romandini", email="mattiasilvestri27@gmail.com" },
+  { name="Giuliano Giari", email="mattiasilvestri27@gmail.com" },
+  ]
+description = "Energy monitor"
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = [
+  "energy",
+  "monitor",
+  "monitoring",
+  "co2",
+  "consumption"
+]
+license = {text = "GPLv3"}
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+where = ["energy_monitor"]
+
+[tool.setuptools.package-data]
+data = ["data/*"]
+
+[project.gui-scripts]
+energy-monitor = "main:main"
