@@ -234,7 +234,7 @@ class MyDataCollectorWorker(QObject):
 if __name__ == '__main__':
 
     # Read YAML file 
-    config_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'config\config.yml')
+    config_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'config', 'config.yml')
     with open(config_file_path, 'r') as stream:
         config = yaml.safe_load(stream)
     config_appearence = config["Appearance"]
