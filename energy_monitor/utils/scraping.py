@@ -25,11 +25,7 @@ def chrome_browser_setup():
     # Disable popup
     options.add_argument("--headless")
 
-    if getattr(sys, 'frozen', False):
-        chromedriver_path = os.path.join(sys._MEIPASS, "./data/chromedriver")
-        driver = webdriver.Chrome(chromedriver_path, options=options)
-    else:
-        driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
     return driver
 

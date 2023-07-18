@@ -1,7 +1,7 @@
-from utils import api_calls, cpu
+from energy_monitor.utils import api_calls, cpu
 from PyQt5.QtWidgets import QApplication
 import sys
-from core.gui import PlotWindowApp
+from energy_monitor.core.gui import PlotWindowApp
 
 
 def cpu_co2(country_code = None) -> None:

@@ -3,8 +3,7 @@ import json
 import os
 import psutil
 import re
-import sys
-from utils.scraping import scrape_tdp_intel, get_AMD_database
+from energy_monitor.utils.scraping import scrape_tdp_intel, get_AMD_database
 
 
 def get_cpu_info() -> str:

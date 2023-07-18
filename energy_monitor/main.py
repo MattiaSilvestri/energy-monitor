@@ -1,5 +1,5 @@
-from core.cpuCO2 import cpu_co2
-from utils import cli
+from energy_monitor.core.cpuCO2 import cpu_co2
+from energy_monitor.utils import cli
 
 def main():
 # Script for launching the app
@@ -17,10 +17,10 @@ def main():
     else:
         # Disclaimer message
         print("The application uses IP geolocation to retrieve your position. If you \
-    want to disable automatic geolocation, launch the application with the the --set-country flag to \
-    manually input your country. Unfortunately the Electricity Map database doesn't \
-    contain all countries, so your country might not have CO2 data even if it's \
-    present in the list.", end="\n")
+want to disable automatic geolocation, launch the application with the the --set-country flag to \
+manually input your country. Unfortunately the Electricity Map database doesn't \
+contain all countries, so your country might not have CO2 data even if it's \
+present in the list.", end="\n")
 
         # Get confirmation from user
         while True:
