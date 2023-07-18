@@ -3,7 +3,7 @@ requires = ["setuptools>=68.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "energy-monitor"
+name = "energy_monitor"
 version = "0.0.1"
 authors = [
   { name="Mattia Silvestri", email="mattiasilvestri27@gmail.com" },
@@ -30,11 +30,16 @@ dynamic = ["dependencies"]
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
-[tool.setuptools.packages.find]
-where = ["energy_monitor"]
+[tool.setuptools]
+packages = [
+  "energy_monitor", 
+  "energy_monitor.core", 
+  "energy_monitor.utils"
+]
+include-package-data = true
 
-[tool.setuptools.package-data]
-data = ["data/*"]
+# [tool.setuptools.package-data]
+# energy_monitor.data = ["data/*"]
 
-[project.gui-scripts]
-energy-monitor = "main:main"
+[project.scripts]
+energy-monitor = "energy_monitor.main:main"
