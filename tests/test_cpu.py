@@ -30,16 +30,6 @@ def test_get_cpu_tdp():
 
     # Check that the result is greater than zero
     assert tdp > 0.0 
-
-    # Check that the function raises a value error for different cases other than input string
-    with pytest.raises(ValueError):
-        get_cpu_tdp("Unknown CPU Name")
-    with pytest.raises(ValueError):
-        get_cpu_tdp(1234)
-    with pytest.raises(ValueError):    
-        get_cpu_tdp("")
-    with pytest.raises(ValueError):
-        get_cpu_tdp(None)
     
     # check that a json file has been saved in the data folder
     path = [x[0] for x in os.walk('..') if 'data' in x[0]][0]

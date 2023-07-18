@@ -2,7 +2,6 @@ from utils import api_calls, cpu
 from PyQt5.QtWidgets import QApplication
 import sys
 from core.gui import PlotWindowApp
-from typing import Union
 
 
 def cpu_co2(country_code = None) -> None:
@@ -63,8 +62,8 @@ def cpu_co2(country_code = None) -> None:
               'database, it is therefore not possible to retrieve CO2 emissions data.')
 
 
-def combine_cpu_CO2(cpu_usage: Union[float, int], usage_time: Union[float, int], 
-                    cpu_tdp: Union[float, int], co2_intensity: Union[float, int]) -> float:
+def combine_cpu_CO2(cpu_usage: float, usage_time: float, 
+                    cpu_tdp: float, co2_intensity: int) -> float:
     """
     Combine CPU usage, CPU TDP and CO2 intensity to compute CO2 consumption.
 
@@ -79,15 +78,7 @@ def combine_cpu_CO2(cpu_usage: Union[float, int], usage_time: Union[float, int],
     :return: grams of CO2 emitted for your CPU usage in the specified time
     :rtype: float
     """
-    # check input
-    if not isinstance(cpu_usage, (float, int)):
-        raise TypeError("cpu_usage must be a float or an integer")
-    if not isinstance(usage_time, (float, int)):
-        raise TypeError("usage_time must be a float or an integer")
-    if not isinstance(cpu_tdp, (float, int)):
-        raise TypeError("cpu_tdp must be a float or an integer")
-    if not isinstance(co2_intensity, (float, int)):
-        raise TypeError("co2_intensity must be a float or an integer")
+
     # transfrom Watt in kWatt
     cpu_tdp_KW = cpu_tdp/1000
 
@@ -100,8 +91,8 @@ def combine_cpu_CO2(cpu_usage: Union[float, int], usage_time: Union[float, int],
     return co2_emissions
 
 
-def get_interval_emissions(cpu_tdp: Union[float, int], co2_intensity: Union[float, int], 
-                           time_frequency: Union[float, int]) -> float:
+def get_interval_emissions(cpu_tdp: float, co2_intensity: int, 
+                           time_frequency: int) -> float:
     """
     From a given cpu_tdp and co2_intensity return the co2 emissions computing the cpu_usage at current time.
 
@@ -114,14 +105,7 @@ def get_interval_emissions(cpu_tdp: Union[float, int], co2_intensity: Union[floa
     :return: grams of CO2 emitted for your CPU usage in the specified time
     :rtype: float
     """
-    # check input
-    if not isinstance(cpu_tdp, (float, int)):
-        raise TypeError("cpu_tdp must be a float or an integer")
-    if not isinstance(co2_intensity, (float, int)):
-        raise TypeError("co2_intensity must be a float or an integer")
-    if not isinstance(time_frequency, (float, int)):
-        raise TypeError("time_frequency must be a float or an integer")
-    
+
     # Retrieve cpu usage
     cpu_usage = cpu.get_cpu_usage(time_frequency)
 

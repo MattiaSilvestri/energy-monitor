@@ -30,16 +30,6 @@ def get_request_co2signal(lon = None, lat = None, countrycode = None):
             raise ValueError('Country code not found')
         params = {'countryCode': countrycode}
     else:
-        if not lon or not lat:
-            raise ValueError('Please provide either a country code or a pair of coordinates')
-        if not isinstance(lon, str) or not isinstance(lat, str):
-            raise ValueError('Coordinates must be strings')
-        # check that lat and lon contain float values
-        try:
-            float(lon)
-            float(lat)
-        except ValueError:
-            raise ValueError('Coordinates must be float or int')
         params = {'lon': lon, 'lat': lat}
 
     # Perform the API call

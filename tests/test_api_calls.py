@@ -22,17 +22,14 @@ def test_get_location():
     
 
 def test_get_request_co2signal():
-    # check that the function returns value errors if no country code or coordinates are provided
+    # check that the function returns an error if the country code is not a string
     with pytest.raises(ValueError):
-        get_request_co2signal()
-    # check that the function returns value errors if the country code is not an alpha-2 code
+        get_request_co2signal(countrycode=10)
+    # check that the function returns value errors if the country code is not a valid country code
     with pytest.raises(ValueError):
         get_request_co2signal(countrycode='ABC')
-    # check that the function returns value errors if the coordinates are not int or float
-    with pytest.raises(ValueError):
-        get_request_co2signal(lon=1, lat=1)
-
-    # check the output of the function 
+    
+    # check the output of the function using both country code and coordinates
     for input in [('IT'), ('12.5674', '41.8719')]:
         if len(input) == 1:
             output = get_request_co2signal(countrycode='IT')

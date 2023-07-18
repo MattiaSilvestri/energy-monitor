@@ -44,9 +44,6 @@ def get_cpu_tdp(cpu_name: str) -> float:
     :return: CPU Thermal Design Power (TDP) in watts
     :rtype: float
     """
-    # check that the input is a string otherwise raise a ValueError
-    if not isinstance(cpu_name, str):
-        raise ValueError("Input must be a string")
     # get the path to the data folder
     path = [x[0] for x in os.walk('..') if 'data' in x[0]][0]
     # define file name of the output file
