@@ -38,8 +38,5 @@ packages = [
 ]
 include-package-data = true
 
-# [tool.setuptools.package-data]
-# energy_monitor.data = ["data/*"]
-
 [project.scripts]
 energy-monitor = "energy_monitor.main:main"
