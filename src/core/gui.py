@@ -46,14 +46,15 @@ class PlotWindowApp(QWidget):
         self.new_value = 0
 
         # find y unit of measurement multiplier
-        if y_unit_measurement == "s":
-            self.y_unit_multiplier = 1
-        elif y_unit_measurement == "m":
-            self.y_unit_multiplier = 60
-        elif y_unit_measurement == "h":
-            self.y_unit_multiplier = 3600
-        else:
-            raise ValueError("Please enter a valid unit of measure for the y-axis. Choose between 's', 'm' or 'h'.")
+        match y_unit_measurement:
+            case "s":
+                self.y_unit_multiplier = 1
+            case "m":
+                self.y_unit_multiplier = 60
+            case "h":
+                self.y_unit_multiplier = 3600
+            case _:
+                raise ValueError("Please enter a valid unit of measure for the y-axis. Choose between 's', 'm' or 'h'.")
 
         # initialize initial graphs values
         self.x = np.arange(num_x_points)[::-1]*-1
@@ -83,17 +84,18 @@ class PlotWindowApp(QWidget):
         font = {
             'weight': 'normal',
             'size': 10
-        }
+        } # TODO: add to config
         matplotlib.rc('font', **font)
 
         # create a matplotlib line plot structure
         self.ax = self.canvas.figure.subplots()
-        self.ax.set_xlim([-self.num_x_points, 0])
+        self.ax.set_xlim([-self.num_x_points+1, 0])
         self.set_labels_ticks(x_unit_measurement=self.x_unit_measurement, num_ticks=self.num_x_ticks)
-        self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}{self.y_unit_measurement}", fontsize="small", rotation="horizontal", horizontalalignment="right")
-        self.ax.set_xlabel("Time")
+        self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}{self.y_unit_measurement}", fontsize="small", horizontalalignment="right")
+        self.ax.set_xlabel(f"Time ({self.x_unit_measurement})")
         self.line_plot = None
-        self.ax.set_position([0.1, 0.2, 0.85, 0.7]) #left,bottom,width,height 
+        self.ax.set_position([0.1, 0.2, 0.85, 0.7]) #left,bottom,width,height # TODO: add to config
+        self.ax.grid(color='b', linestyle='-', linewidth=0.1) # TODO: add to config
 
     def connect_timer(self):
         '''
@@ -147,10 +149,15 @@ class PlotWindowApp(QWidget):
         self.y = self.y[1:]
         self.y = np.append(self.y, self.new_value)
 
+        # fill area under the line
+        if self.ax.collections:
+            self.ax.collections[0].remove()
+        self.ax.fill_between(self.x,self.y, 0, color='blue', alpha=.1) # TODO: add to config
+        
         # display updated plot
         if self.line_plot:
             self.line_plot[0].remove()
-        self.line_plot = self.ax.plot(self.x,self.y, color='g')
+        self.line_plot = self.ax.plot(self.x,self.y, color='#1560BD', alpha=.8) # TODO: add to config
         self.canvas.draw()
 
     def set_labels_ticks(self, num_ticks, x_unit_measurement):
@@ -162,17 +169,18 @@ class PlotWindowApp(QWidget):
         :param x_unit_measurement: letter corresponding to the unit of measurement for the x-axis (s: seconds, m: minutes, h:hours)
         :type x_unit_measurement: str
         '''  
-        if x_unit_measurement == "s":
-            labels_all = self.x * self.time_interval
-        elif x_unit_measurement == "m":
-            labels_all = self.x * self.time_interval / 60
-        elif x_unit_measurement == "h":
-            labels_all = self.x * self.time_interval / 3600
-        else:
-            raise ValueError("Please enter a valid unit of measure for the x-axis. Choose between 's', 'm' or 'h'.")
+        match x_unit_measurement:
+            case "s":
+                labels_all = self.x * self.time_interval
+            case "m":
+                labels_all = self.x * self.time_interval / 60
+            case "h":
+                labels_all = self.x * self.time_interval / 3600
+            case _:
+                raise ValueError("Please enter a valid unit of measure for the x-axis. Choose between 's', 'm' or 'h'.")
         ticks = np.linspace(self.x[0],self.x[-1], num_ticks)
         labels = labels_all[np.linspace(0,len(labels_all)-1, num_ticks).astype(int)]
-        labels_ticks = [str(round(element, 1))+x_unit_measurement for element in list(labels)]
+        labels_ticks = [str(round(element, 1)) for element in list(labels)]
         self.ax.set_xticks(ticks, labels_ticks)
 
 
