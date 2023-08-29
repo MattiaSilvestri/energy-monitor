@@ -3,15 +3,9 @@ from PyQt5.QtWidgets import QApplication
 import sys
 from core.gui import PlotWindowApp
 from utils.io import safe_read_config
-import yaml
-import os
 
 # Read YAML file
 config = safe_read_config('config.yml')
-
-# config_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'config', 'config.yml')
-# with open(config_file_path, 'r') as stream:
-#     config = yaml.safe_load(stream)
 config_appearence = config["Appearance"]
 
 def cpu_co2(country_code = None) -> None:

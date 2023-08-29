@@ -3,7 +3,7 @@ import yaml
 import os
 
 # Read YAML file 
-secrets_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'config', 'secrets.yml')
+secrets_file_path = os.path.join(os.path.dirname(__file__).split("src\\")[0], 'config', 'secrets.yml')
 with open(secrets_file_path, 'r') as stream:
     secrets = yaml.safe_load(stream)
 

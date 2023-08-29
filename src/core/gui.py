@@ -6,8 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 from random import randint
-import yaml
-import os
+from utils.io import safe_read_config
 
 
 # Plot Class
@@ -234,9 +233,7 @@ class MyDataCollectorWorker(QObject):
 if __name__ == '__main__':
 
     # Read YAML file 
-    config_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'config', 'config.yml')
-    with open(config_file_path, 'r') as stream:
-        config = yaml.safe_load(stream)
+    config = safe_read_config('config.yml')
     config_appearence = config["Appearance"]
     
     app = QApplication(sys.argv)
