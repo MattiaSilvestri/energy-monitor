@@ -20,6 +20,14 @@ def get_request_co2signal(lon = None, lat = None, countrycode = None):
     headers = {'auth-token': 'NjqWpnG2yaPL3gIaP9pPQeoFshLGd5Qo'}
 
     if countrycode:
+        if not isinstance(countrycode, str):
+            raise ValueError('Country code must be a string')
+        # get the list of countries
+        req = requests.get('https://api.electricitymap.org/v3/zones')
+        # Display country list
+        code_list = [k for k in req.json()]
+        if not countrycode in code_list:
+            raise ValueError('Country code not found')
         params = {'countryCode': countrycode}
     else:
         params = {'lon': lon, 'lat': lat}
