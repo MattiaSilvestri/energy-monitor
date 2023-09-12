@@ -32,7 +32,7 @@ def get_cpu_database(fname, cpu_brand) -> dict:
     """
     # url of the json file in our github repository
     # todo: update according to branch 
-    url = f'https://raw.githubusercontent.com/MattiaSilvestri/energy-monitor/cpu_data/data/database_{cpu_brand}.json'
+    url = f'https://raw.githubusercontent.com/MattiaSilvestri/energy-monitor/main/data/database_{cpu_brand}.json'
     # get the json file in the url using requests and parse it as json format
     data = requests.get(url).json()
     # save it in the data folder
