@@ -86,7 +86,7 @@ def _create_intel_database():
             # iterate over specs
             for spec in processor_specs:
                 # check if tech-label contains 'TDP'
-                if spec.find("div", attrs={"class": "tech-label"}) is not None:
+                if spec.find("div", attrs={"class": "tech-label"}):
                     if 'TDP' in spec.find("div", attrs={"class": "tech-label"}).text:
                         # get the tdp
                         tdp = spec.find("div", attrs={"class": "tech-data"}).text
@@ -98,7 +98,7 @@ def _create_intel_database():
                         break
     # save the dictionary in a json file
     # get the path to the data folder
-    path = [x[0] for x in os.walk('..') if 'data' in x[0]][0]
+    path = os.path.join(os.path.dirname(__file__).split("energy-monitor")[0], 'energy-monitor', 'data')
     fname = os.path.join(path, 'database_intel.json')
     with open(fname, 'w') as f:
         json.dump(intel_database, f)
