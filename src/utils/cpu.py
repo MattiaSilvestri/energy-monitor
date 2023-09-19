@@ -44,7 +44,7 @@ def get_cpu_tdp(cpu_name: str) -> float:
     :rtype: float
     """
     # get the path to the data folder
-    path = os.path.join(os.path.dirname(__file__), 'data')
+    path = os.path.join(os.path.dirname(__file__).split("src")[0], 'data')
     # define file name of the output file
     json_fname = os.path.join(path, 'cpu_tdp.json')
     if os.path.isfile(json_fname) and not 'pytest' in sys.modules:
@@ -100,4 +100,4 @@ def get_cpu_tdp(cpu_name: str) -> float:
     with open(json_fname, 'w') as f:
         json.dump({'tdp': tdp}, f)
     # return the tdp value
-    return tdp
+    return float(tdp)
