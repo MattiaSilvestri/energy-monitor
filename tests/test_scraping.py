@@ -2,7 +2,7 @@ import os
 import sys
 import pytest
 # add src to path to be able to run the tests
-sys.path.append(os.path.join(os.path.dirname(__file__).split("energy-monitor")[0], 'energy-monitor', 'src'))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__).split("energy-monitor")[0], 'energy-monitor', 'src')))
 from utils.scraping import get_cpu_database
     
 
