@@ -35,6 +35,9 @@ def get_cpu_database(fname, cpu_brand) -> dict:
     url = f'https://raw.githubusercontent.com/MattiaSilvestri/energy-monitor/main/data/database_{cpu_brand}.json'
     # get the json file in the url using requests and parse it as json format
     data = requests.get(url).json()
+    # create data folder if it doesnt exist
+    if not os.path.exists(os.path.dirname(fname)):
+        os.makedirs(os.path.dirname(fname))
     # save it in the data folder
     with open(fname, 'w') as f:
         json.dump(data, f)
