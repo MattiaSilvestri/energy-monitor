@@ -3,6 +3,7 @@ import json
 import os
 import psutil
 import re
+import sys
 from utils.scraping import get_cpu_database
 
 
@@ -44,7 +45,7 @@ def get_cpu_tdp(cpu_name: str) -> float:
     :rtype: float
     """
     # get the path to the data folder
-    path = os.path.join(os.path.dirname(__file__).split("src")[0], 'data')
+    path = os.path.join(os.path.dirname(__file__).split("energy-monitor")[0], 'energy-monitor', 'data')
     # define file name of the output file
     json_fname = os.path.join(path, 'cpu_tdp.json')
     if os.path.isfile(json_fname) and not 'pytest' in sys.modules:
