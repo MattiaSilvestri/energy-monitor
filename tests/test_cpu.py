@@ -32,6 +32,6 @@ def test_get_cpu_tdp():
     assert tdp > 0.0 
     
     # check that a json file has been saved in the data folder
-    path = [x[0] for x in os.walk('..') if 'data' in x[0]][0]
+    path = os.path.join(os.path.dirname(__file__).split("energy-monitor")[0], 'energy-monitor', 'data')
     json_fname = os.path.join(path, 'cpu_tdp.json')
     assert os.path.isfile(json_fname)
