@@ -1,6 +1,7 @@
 import os
 import yaml
 import re
+import sys
 
 
 def safe_read_config(config_file: str) -> dict:
@@ -25,7 +26,7 @@ def safe_read_config(config_file: str) -> dict:
     error_message = "CONFIGURATION ERORR! There is a problem with some values in the configuration files, please make the appropriate changes following these instructions:\n"
     if errors:
         print(error_message + errors)
-        exit()
+        sys.exit()
 
     return config_dict
 
