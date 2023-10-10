@@ -2,13 +2,6 @@ import requests
 import yaml
 import os
 
-# Read YAML file
-secrets_file_path = os.path.join(
-    os.path.dirname(__file__).split("src")[0], "config", "secrets.yml"
-)
-with open(secrets_file_path, "r") as stream:
-    secrets = yaml.safe_load(stream)
-
 
 def get_request_co2signal(lon=None, lat=None, countrycode=None):
     """
@@ -24,6 +17,13 @@ def get_request_co2signal(lon=None, lat=None, countrycode=None):
     :return: Dictionary containing the response
     :rtype: dict
     """
+
+    # Read YAML file
+    secrets_file_path = os.path.join(
+        os.path.dirname(__file__).split("src")[0], "config", "secrets.yml"
+    )
+    with open(secrets_file_path, "r") as stream:
+        secrets = yaml.safe_load(stream)
 
     # Initialize the request
     url = "https://api.co2signal.com/v1/latest"
@@ -55,6 +55,13 @@ def get_location() -> dict:
     :return: dictionary with location information
     :rtype: dict
     """
+    # Read YAML file
+    secrets_file_path = os.path.join(
+        os.path.dirname(__file__).split("src")[0], "config", "secrets.yml"
+    )
+    with open(secrets_file_path, "r") as stream:
+        secrets = yaml.safe_load(stream)
+
     # Initialize the request
     url = "https://api.ipgeolocation.io/ipgeo"
     params = {"apiKey": secrets["API_keys"]["ipgeolocation"]}
