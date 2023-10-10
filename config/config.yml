@@ -14,10 +14,10 @@ Appearance:
     y_unit_measurement: "h" #s:seconds, m:minutes, h:hours
     font_size: 10 #pixels
     font_weight: 'normal'
-    grid_line_color: 'b'
+    grid_line_color: '#1f77b4'
     grid_line_style: '-'
     grid_line_width: 0.1
     line_color: '#1560BD'
     line_alpha: 0.8
-    area_color: 'blue'
+    area_color: '#1f77b4'
     area_alpha: 0.1
