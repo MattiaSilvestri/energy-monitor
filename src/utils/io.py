@@ -31,14 +31,14 @@ def safe_read_config(config_file: str) -> dict:
     return config_dict
 
 
-def is_config_safe(config_dict: dict) -> list[str]:
+def is_config_safe(config_dict: dict) -> str:
     """
     Check if the values contained in the configuration file are consistent with the application, if not return errors descriptions and suggestions on how to solve the issues
 
     :param config_file: configuration file dictionary
     :type config_file: dict
     :return: list of errors descriptions and suggestions on how to solve the issues
-    :rtype: list
+    :rtype: str
     """
 
     config_functional = config_dict["Functional"]
