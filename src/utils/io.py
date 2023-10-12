@@ -115,21 +115,21 @@ def recursively_check_nested_dict(
     :rtype: list
 
     """
-    level_errors = []
+    current_level_errors = []
 
     for param, value in zip(d.keys(), d.values()):
         if isinstance(value, dict):
-            k_errors = recursively_check_nested_dict(
+            next_level_errors = recursively_check_nested_dict(
                 value, params_to_check, checker_function
             )
-            level_errors += k_errors
+            current_level_errors += next_level_errors
         else:
             if param in params_to_check:
                 error = checker_function(d[param])
                 if error:
-                    level_errors.append(f"{param} {error}")
+                    current_level_errors.append(f"{param} {error}")
 
-    return level_errors
+    return current_level_errors
 
 
 def is_positive_number(value) -> str:
