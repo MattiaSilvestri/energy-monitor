@@ -40,10 +40,6 @@ def is_config_safe(config_dict: dict) -> str:
     :return: list of errors descriptions and suggestions on how to solve the issues
     :rtype: str
     """
-
-    config_functional = config_dict["Functional"]
-    config_appearance_window = config_dict["Appearance"]["Window"]
-    config_appearance_plot = config_dict["Appearance"]["Plot"]
     errors = []
 
     # General numbers requirements
@@ -59,76 +55,80 @@ def is_config_safe(config_dict: dict) -> str:
         "line_alpha",
         "area_alpha",
     ]
-    for parameter in is_number_reqs:
-        if parameter in config_functional.keys():
-            error = is_positive_number(config_functional[parameter])
-        if parameter in config_appearance_window.keys():
-            error = is_positive_number(config_appearance_window[parameter])
-        if parameter in config_appearance_plot.keys():
-            error = is_positive_number(config_appearance_plot[parameter])
-        if error:
-            errors.append(f"{parameter} {error}")
+    errors += recursively_check_nested_dict(
+        config_dict, is_number_reqs, is_positive_number
+    )
 
     # Normalized numbers requirements
     is_norm_number_reqs = ["line_alpha", "area_alpha"]
-    for parameter in is_norm_number_reqs:
-        if parameter in config_functional.keys():
-            error = is_normalized_number(config_functional[parameter])
-        if parameter in config_appearance_window.keys():
-            error = is_normalized_number(config_appearance_window[parameter])
-        if parameter in config_appearance_plot.keys():
-            error = is_normalized_number(config_appearance_plot[parameter])
-        if error:
-            errors.append(f"{parameter} {error}")
+    errors += recursively_check_nested_dict(
+        config_dict, is_norm_number_reqs, is_normalized_number
+    )
 
     # Time-letters requirements
     is_time_letter_reqs = ["x_unit_measurement", "y_unit_measurement"]
-    for parameter in is_time_letter_reqs:
-        if parameter in config_functional.keys():
-            error = is_time_letter(config_functional[parameter])
-        if parameter in config_appearance_window.keys():
-            error = is_time_letter(config_appearance_window[parameter])
-        if parameter in config_appearance_plot.keys():
-            error = is_time_letter(config_appearance_plot[parameter])
-        if error:
-            errors.append(f"{parameter} {error}")
+    errors += recursively_check_nested_dict(
+        config_dict, is_time_letter_reqs, is_time_letter
+    )
 
     # List of numbers requirements
     is_list_num_reqs = ["plot_position"]
-    for parameter in is_list_num_reqs:
-        if parameter in config_functional.keys():
-            error = is_number_list(config_functional[parameter])
-        if parameter in config_appearance_window.keys():
-            error = is_number_list(config_appearance_window[parameter])
-        if parameter in config_appearance_plot.keys():
-            error = is_number_list(config_appearance_plot[parameter])
-        if error:
-            errors.append(f"{parameter} {error}")
+    errors += recursively_check_nested_dict(
+        config_dict, is_list_num_reqs, is_number_list
+    )
 
     # Hex color requirements
     is_color_hex_reqs = ["grid_line_color", "line_color", "area_color"]
-    for parameter in is_color_hex_reqs:
-        if parameter in config_functional.keys():
-            error = is_color_hex(config_functional[parameter])
-        if parameter in config_appearance_window.keys():
-            error = is_color_hex(config_appearance_window[parameter])
-        if parameter in config_appearance_plot.keys():
-            error = is_color_hex(config_appearance_plot[parameter])
-        if error:
-            errors.append(f"{parameter} {error}")
+    errors += recursively_check_nested_dict(
+        config_dict, is_color_hex_reqs, is_color_hex
+    )
 
     # Special reqs
-    error = is_font(config_appearance_plot["font_weight"])
+    error = is_font(config_dict["Appearance"]["Plot"]["font_weight"])
     if error:
-        errors.append(f"font_weight {error}")
-    error = is_line_style(config_appearance_plot["grid_line_style"])
+        errors += f"font_weight {error}"
+    error = is_line_style(config_dict["Appearance"]["Plot"]["grid_line_style"])
     if error:
-        errors.append(f"grid_line_style {error}")
+        errors += f"grid_line_style {error}"
 
     # Format error list into readable string
     error_string = "\n".join(["* " + e for e in errors])
 
     return error_string
+
+
+def recursively_check_nested_dict(
+    d: dict, params_to_check: list, checker_function: callable
+) -> list:
+    """
+    Recursive function that returns a list of errors by taking a dictionary,
+    a checker function and a list of parameters where to apply this function
+
+    :param d: dictionary where you want to perform the checks
+    :type d: dict
+    :param params_to_check: list of parameters to check with the checker function
+    :type params_to_check: list
+    :param checker_function: function to find errors in the configuration parameters
+    :type checker_function: callable
+    :return: list of errors descriptions and suggestions on how to solve the issues
+    :rtype: list
+
+    """
+    level_errors = []
+
+    for param, value in zip(d.keys(), d.values()):
+        if isinstance(value, dict):
+            k_errors = recursively_check_nested_dict(
+                value, params_to_check, checker_function
+            )
+            level_errors += k_errors
+        else:
+            if param in params_to_check:
+                error = checker_function(d[param])
+                if error:
+                    level_errors.append(f"{param} {error}")
+
+    return level_errors
 
 
 def is_positive_number(value) -> str:
