@@ -15,11 +15,14 @@ elif args.country:
     cpu_co2(country_code=country_code)
 else:
     # Disclaimer message
-    print("The application uses IP geolocation to retrieve your position. If you \
+    print(
+        "The application uses IP geolocation to retrieve your position. If you \
 want to disable automatic geolocation, launch the application with the the --set-country flag to \
 manually input your country. Unfortunately the Electricity Map database doesn't \
 contain all countries, so your country might not have CO2 data even if it's \
-present in the list.", end="\n")
+present in the list.",
+        end="\n",
+    )
 
     # Get confirmation from user
     while True:
