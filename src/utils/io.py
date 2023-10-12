@@ -2,6 +2,7 @@ import os
 import yaml
 import re
 import sys
+from typing import Callable
 
 
 def safe_read_config(config_file: str) -> dict:
@@ -98,7 +99,7 @@ def is_config_safe(config_dict: dict) -> str:
 
 
 def recursively_check_nested_dict(
-    d: dict, params_to_check: list, checker_function: callable
+    d: dict, params_to_check: list, checker_function: Callable
 ) -> list:
     """
     Recursive function that returns a list of errors by taking a dictionary,
@@ -109,7 +110,7 @@ def recursively_check_nested_dict(
     :param params_to_check: list of parameters to check with the checker function
     :type params_to_check: list
     :param checker_function: function to find errors in the configuration parameters
-    :type checker_function: callable
+    :type checker_function: Callable
     :return: list of errors descriptions and suggestions on how to solve the issues
     :rtype: list
 
