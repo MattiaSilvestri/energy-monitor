@@ -1,3 +1,2 @@
-include energy_monitor/data/tableExport.json
 include README.md
 include LICENSE

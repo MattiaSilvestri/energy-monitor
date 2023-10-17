@@ -4,3 +4,5 @@
 **/build
 **/dist
 /data/cpu_tdp.json
+**/.vscode
+*.egg-info

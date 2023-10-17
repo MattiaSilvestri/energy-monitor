@@ -38,5 +38,8 @@ packages = [
 ]
 include-package-data = true
 
+[tool.setuptools.package-data]
+"energy_monitor.data" = ["*.json"]
+
 [project.scripts]
 energy-monitor = "energy_monitor.main:main"
