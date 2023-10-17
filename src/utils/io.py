@@ -117,7 +117,7 @@ def recursively_check_nested_dict(
     """
     current_level_errors = []
 
-    for param, value in zip(d.keys(), d.values()):
+    for param, value in d.items():
         if isinstance(value, dict):
             next_level_errors = recursively_check_nested_dict(
                 value, params_to_check, checker_function
