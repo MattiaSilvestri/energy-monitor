@@ -2,6 +2,11 @@ from utils import api_calls, cpu
 from PyQt5.QtWidgets import QApplication
 import sys
 from core.gui import PlotWindowApp
+from utils.io import safe_read_config
+
+# Read YAML file
+config = safe_read_config('config.yml')
+config_appearence = config["Appearance"]
 
 
 def cpu_co2(country_code = None) -> None:
@@ -31,19 +36,20 @@ def cpu_co2(country_code = None) -> None:
 
         # Retrieve cpu info
         print('\nRetrieving CPU data...')
-        cpu_retrieval_time = 1 # TODO: add to config
+        cpu_retrieval_time = config["Functional"]["cpu_retrieval_time"]
+        # print(config_file.Functional.cpu_retrieval_time)
         cpu_info = cpu.get_cpu_info()
         print("- Current CPU: {0}".format(cpu_info))
 
         # Launch plot
         app = QApplication(sys.argv)
-        app.setStyleSheet('''
-            QWidget {
-                font-size: 30px;
-            }
-        ''') # TODO: add to config
-        myApp = PlotWindowApp(cpu.get_cpu_tdp(cpu_info), carbon_intensity, cpu_retrieval_time, get_interval_emissions, 
-                              num_x_points=200, num_x_ticks=5, x_unit_measurement="m", y_unit_measurement="h") # TODO: add to config
+        qwidget_params = '''
+            QWidget {{
+                font-size: {int}px;
+            }}
+        '''.format(int=config_appearence['Window']["window_font_size"])
+        app.setStyleSheet(qwidget_params)
+        myApp = PlotWindowApp(cpu.get_cpu_tdp(cpu_info), carbon_intensity, cpu_retrieval_time, get_interval_emissions, config_appearence)
         myApp.show()
         print('\nPlot window in execution...')
         try:
@@ -80,7 +86,7 @@ def combine_cpu_CO2(cpu_usage: float, usage_time: float,
     used_KWh = cpu_usage * cpu_tdp_KW / 100 * (usage_time/3600)
 
     # get the g of Co2
-    co2_emissions = round(used_KWh * co2_intensity, 6) # TODO: add to config
+    co2_emissions = round(used_KWh * co2_intensity, config["Functional"]["co2_emissions_precision"])
 
     return co2_emissions
 
@@ -101,7 +107,7 @@ def get_interval_emissions(cpu_tdp: float, co2_intensity: int,
     """
 
     # Retrieve cpu usage
-    cpu_usage = cpu.get_cpu_usage(time_frequency-0.05) # TODO: add to config
+    cpu_usage = cpu.get_cpu_usage(time_frequency-config["Functional"]["cpu_retrieval_time_decrement"])
 
     # Combine Co2 with CPU usage
     co2_emissions = combine_cpu_CO2(cpu_usage, time_frequency, cpu_tdp, co2_intensity)
