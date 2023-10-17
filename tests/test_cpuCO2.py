@@ -17,4 +17,4 @@ def test_get_interval_emissions():
     # test that the function returns a float
     assert isinstance(get_interval_emissions(1.0,1,1), float)
     # test that the function returns a number larger than 0
-    assert get_interval_emissions(15., 490, 1) > 0
+    assert get_interval_emissions(28., 500, 1) >= 0

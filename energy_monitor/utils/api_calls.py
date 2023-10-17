@@ -1,6 +1,9 @@
 import requests
+import yaml
+import os
 
-def get_request_co2signal(lon = None, lat = None, countrycode = None):
+
+def get_request_co2signal(lon=None, lat=None, countrycode=None):
     """
     Perform a GET request to co2signal API.
 
@@ -15,22 +18,29 @@ def get_request_co2signal(lon = None, lat = None, countrycode = None):
     :rtype: dict
     """
 
+    # Read YAML file
+    secrets_file_path = os.path.join(
+        os.path.dirname(__file__).split("src")[0], "config", "secrets.yml"
+    )
+    with open(secrets_file_path, "r") as stream:
+        secrets = yaml.safe_load(stream)
+
     # Initialize the request
-    url = 'https://api.co2signal.com/v1/latest'
-    headers = {'auth-token': 'NjqWpnG2yaPL3gIaP9pPQeoFshLGd5Qo'}
+    url = "https://api.co2signal.com/v1/latest"
+    headers = {"auth-token": secrets["API_keys"]["co2signal"]}
 
     if countrycode:
         if not isinstance(countrycode, str):
-            raise ValueError('Country code must be a string')
+            raise ValueError("Country code must be a string")
         # get the list of countries
-        req = requests.get('https://api.electricitymap.org/v3/zones')
+        req = requests.get("https://api.electricitymap.org/v3/zones")
         # Display country list
         code_list = [k for k in req.json()]
         if not countrycode in code_list:
-            raise ValueError('Country code not found')
-        params = {'countryCode': countrycode}
+            raise ValueError("Country code not found")
+        params = {"countryCode": countrycode}
     else:
-        params = {'lon': lon, 'lat': lat}
+        params = {"lon": lon, "lat": lat}
 
     # Perform the API call
     req = requests.get(url, headers=headers, params=params)
@@ -45,9 +55,16 @@ def get_location() -> dict:
     :return: dictionary with location information
     :rtype: dict
     """
+    # Read YAML file
+    secrets_file_path = os.path.join(
+        os.path.dirname(__file__).split("src")[0], "config", "secrets.yml"
+    )
+    with open(secrets_file_path, "r") as stream:
+        secrets = yaml.safe_load(stream)
+
     # Initialize the request
-    url = 'https://api.ipgeolocation.io/ipgeo'
-    params = {'apiKey': '640053f7cb87484bab9024592ee15d9d'}
+    url = "https://api.ipgeolocation.io/ipgeo"
+    params = {"apiKey": secrets["API_keys"]["ipgeolocation"]}
 
     # Perform the API call
     req = requests.get(url, params=params)

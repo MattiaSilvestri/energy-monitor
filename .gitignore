@@ -6,3 +6,4 @@
 /data/cpu_tdp.json
 **/.vscode
 *.egg-info
+/config/secrets.yml

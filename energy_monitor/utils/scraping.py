@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import numpy as np
 import json
 import os
 import sys
@@ -8,71 +9,101 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager  # type: ignore
+import time
 
 
-def chrome_browser_setup():
+def get_carbon_intensity(html):
     """
-    Inizialize webdriver paramiters for a specific browser
+    Get the carbon intensity value of a certain country from the left panel of Electricity Map
 
-    :return: Webdriver object with paramenters for the chosen browser.
-    :rtype: selenium.webdriver
+    :param html: The html content requested with selenium
+    :type html: str
+    :return: The value representing the current carbon intensity for a given country
+    :rtype: str
     """
 
-    # Set driver of Chrome (requires version > 9.0)
-    options = webdriver.ChromeOptions()
-    # Specify verbosity level 0:info, 1:warnings, 2:error, 3:fatal
-    options.add_argument("log-level=1")
-    # Disable popup
-    options.add_argument("--headless")
-
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-
-    return driver
+    soup = BeautifulSoup(html, "html.parser")
+    carbon_intensity_square = soup.find_all("p", attrs={"data-test-id": "co2-square-value"})
+    carbon_intensity_value = carbon_intensity_square[0].text
+    return carbon_intensity_value
 
 
-def scrape_tdp_intel(cpu_name) -> float:
+def get_cpu_database(fname, cpu_brand) -> dict:
     """
-    Retrieve the TDP of the CPU from the Intel website.
-
-    :param cpu_name: CPU name, coming from get_cpu_info()
-    :return: CPU Thermal Design Power (TDP) in watts
-    """
-    # initialize the webdriver
-    driver = chrome_browser_setup()
-    # open the intel website with selenium
-    search_url = (
-        "https://ark.intel.com/content/www/us/en/ark/search.html?_charset_=UTF-8&q="
-    )
-    driver.get(search_url)
-    # get the search bar
-    search_bar = driver.find_element(By.ID, "ark-searchbox")
-    # send the cpu_name to the search bar on the website
-    search_bar.send_keys([x for x in cpu_name.split(" ") if x.startswith("i")][0])
-    # search for the name that was sent
-    search_bar.send_keys(Keys.RETURN)
-    # find the span element that contains the TDP, identified by the attribute "MaxTDP"
-    tdp = driver.find_element(By.XPATH, "//span[@data-key='MaxTDP']").text
-    # retain only the numbers including the decimal points, if present
-    tdp = float(re.findall(r"\d+\.\d+|\d+", tdp)[0])
-    # close the driver
-    driver.close()
-    # return the tdp
-    return tdp
-
-
-def get_AMD_database(fname) -> dict:
-    """
-    retieve the AMD database from out github repository
+    retieve the database (either intel or amd) from out github repository
 
     :param fname: name of the json file to be saved
     :return: dictionary containing the AMD database
     """
     # url of the json file in our github repository
-    # todo: update according to branch
-    url = "https://raw.githubusercontent.com/MattiaSilvestri/energy-monitor/cpu_data/data/tableExport.json"
+    # todo: update according to branch 
+    url = f'https://raw.githubusercontent.com/MattiaSilvestri/energy-monitor/main/data/database_{cpu_brand}.json'
     # get the json file in the url using requests and parse it as json format
     data = requests.get(url).json()
+    # create data folder if it doesnt exist
+    if not os.path.exists(os.path.dirname(fname)):
+        os.makedirs(os.path.dirname(fname))
     # save it in the data folder
     with open(fname, "w") as f:
         json.dump(data, f)
+
     return data
+
+
+def _create_intel_database():
+    """
+    Create the database of Intel CPUs and their TDPs, scraping information from the intel website.
+
+    """
+    def _isintel(tag):
+        return tag.has_attr('data-value') and 'Intel' in tag['data-value']
+    
+    # initialize the dictionary
+    intel_database = dict()
+
+    # get the list of processors families from the intel website
+    search_url = "https://www.intel.com/content/www/us/en/products/details/processors.html"
+    soup = BeautifulSoup(requests.get(search_url).content, 'html.parser')
+    # find the title class
+    group_list = soup.find_all("div", attrs={"class": "group-title has-name"})
+    # iterate over processor groups
+    for group in group_list:
+        # get href, insert 'products' before .html and transform href to url
+        group_url = 'https://www.intel.com' + group.find("a")['href'].replace('.html', '/products.html')
+        soup = BeautifulSoup(requests.get(group_url).content, 'html.parser')
+        # stop the loop for a random time between 0 and 1 seconds to avoid being blocked
+        time.sleep(np.random.rand())
+        # isolate the list of processors by looking for the data-value that contains 'Intel'
+        processor_list = soup.find_all(_isintel)
+        # if it is empty, skip
+        if not processor_list:
+            continue
+        # iterate over processors
+        for processor in processor_list:
+            # get href and transform to url
+            processor_url = 'https://www.intel.com' +  processor.find("a")['href']
+            # request the processor page
+            soup = BeautifulSoup(requests.get(processor_url).content, 'html.parser')
+            # stop the loop for a random time between 0 and 1 seconds to avoid being blocked
+            time.sleep(np.random.rand())
+            # get the tdp
+            processor_specs = soup.find_all("div", attrs={"class": "row tech-section-row"})
+            # iterate over specs
+            for spec in processor_specs:
+                # check if tech-label contains 'TDP'
+                if spec.find("div", attrs={"class": "tech-label"}):
+                    if 'TDP' in spec.find("div", attrs={"class": "tech-label"}).text:
+                        # get the tdp
+                        tdp = spec.find("div", attrs={"class": "tech-data"}).text
+                        # retain only the numbers including the decimal points, if present
+                        tdp = float(re.findall(r'\d+\.\d+|\d+', tdp)[0])
+                        # store in dictionary
+                        intel_database[processor['data-value']] = tdp
+                        # break the loop over specs, to speed up the process
+                        break
+    # save the dictionary in a json file
+    # get the path to the data folder
+    path = os.path.join(os.path.dirname(__file__).split("energy-monitor")[0], 'energy-monitor', 'data')
+    fname = os.path.join(path, 'database_intel.json')
+    with open(fname, 'w') as f:
+        json.dump(intel_database, f)

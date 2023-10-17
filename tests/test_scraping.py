@@ -3,22 +3,20 @@ import sys
 import pytest
 # add src to path to be able to run the tests
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__name__), 'src')))
-from utils.scraping import scrape_tdp_intel, get_AMD_database
-
-
-def test_scrape_tdp_intel():
-    # check that the function returns a float
-    assert isinstance(scrape_tdp_intel('Intel(R) Core(TM) i7-8569U CPU @ 2.80GHz'), float)
-    # check that the function returns a float greater than zero
-    assert scrape_tdp_intel('Intel(R) Core(TM) i7-8569U CPU @ 2.80GHz') > 0.0
+from utils.scraping import get_cpu_database
     
 
-def test_get_AMD_database():
-    # 
-    assert isinstance(get_AMD_database('AMD Ryzen 7 5700U with Radeon Graphics'), dict)
-
+def test_get_cpu_database():
     # check that a json file has been saved in the data folder
-    path = os.path.abspath(os.path.join(os.path.dirname(__name__), 'data'))
-    json_fname = os.path.join(path, 'tableExport.json')
+    json_fname = os.path.join(os.path.dirname(__file__).split("energy-monitor")[0], 'energy-monitor', 'data', 'database_amd.json')
+    assert isinstance(get_cpu_database(json_fname, 'amd'), dict)
     assert os.path.isfile(json_fname)
 
+    # repeat for intel
+    json_fname = os.path.join(os.path.dirname(__file__).split("energy-monitor")[0], 'energy-monitor', 'data', 'database_intel.json')
+    assert isinstance(get_cpu_database(json_fname, 'intel'), dict)
+    assert os.path.isfile(json_fname)
+
+
+if __name__ == '__main__':
+    pytest.main([__file__])
