@@ -1,15 +1,15 @@
-import cpuinfo
+import cpuinfo # type: ignore
 import json
 import os
 import psutil
 import re
-from utils.scraping import scrape_tdp_intel, get_AMD_database
+import sys
+from utils.scraping import get_cpu_database
 
 
 def get_cpu_info() -> str:
     """
     Return info regarding CPU model installed.
-
     :return: Info regarding CPU model installed
     :rtype: str
     """
@@ -22,21 +22,16 @@ def get_cpu_info() -> str:
     return cpu_info
 
 
-
-def get_cpu_usage(seconds: float) -> float or None:
+def get_cpu_usage(seconds: float) -> float:
     """
     Return the average CPU usage over a time interval period.
 
     :param seconds: Time interval period considered
     :type seconds: float
     :return: CPU usage percentage
-    :rtype: float or None
+    :rtype: float 
     """
-
-    try:
-        cpu_percentage = psutil.cpu_percent(seconds)
-    except:
-        cpu_percentage= None
+    cpu_percentage = psutil.cpu_percent(seconds)
         
     return cpu_percentage
 
@@ -50,30 +45,30 @@ def get_cpu_tdp(cpu_name: str) -> float:
     :rtype: float
     """
     # get the path to the data folder
-    path = [x[0] for x in os.walk('..') if 'data' in x[0]][0]
+    path = os.path.join(os.path.dirname(__file__).split("energy-monitor")[0], 'energy-monitor', 'data')
     # define file name of the output file
     json_fname = os.path.join(path, 'cpu_tdp.json')
-    if os.path.isfile(json_fname):
+    if os.path.isfile(json_fname) and not 'pytest' in sys.modules:
         # load json file with the cpu tdp info
         with open(json_fname, 'r') as f:
             tdp = json.load(f)['tdp']
     else: 
-        if 'Intel' in cpu_name:
-            # retrieve information from the intel website
-            tdp = scrape_tdp_intel(cpu_name)
-        elif 'AMD' in cpu_name:
-            # use the json file stored in the data folder to retrieve the TDP
-            amd_fname = os.path.join(path, 'tableExport.json')
-            if not os.path.isfile(amd_fname):
-                # download it from our github repository
-                data = get_AMD_database(amd_fname)
-            else:
-                # returns JSON object as a dictionary
-                data = json.load(open(amd_fname))
-            # retrieve the model code (identified by digits and alphabetic character) from cpu_name
-            my_model_code = re.findall(r'\d+\w+', cpu_name)[0]
-            # initialize the list of TDPs. this is to account for multiple potential matches
-            tdp = []
+        # get the brand of the CPU of this computer
+        cpu_brand = 'intel' if 'Intel' in cpu_name else 'amd'            
+        # use the json file stored in the data folder to retrieve the TDP
+        database_fname = os.path.join(path, f'database_{cpu_brand}.json')
+        print(database_fname)
+        if not os.path.isfile(database_fname):
+            # download it from our github repository
+            data = get_cpu_database(database_fname, cpu_brand)
+        else:
+            # returns JSON object as a dictionary
+            data = json.load(open(database_fname))
+        # retrieve the model code (identified by digits and alphabetic character) from cpu_name
+        my_model_code = re.findall(r'\d+\w+', cpu_name)[0]
+        # initialize the list of TDPs. this is to account for multiple potential matches
+        tdp = []
+        if cpu_brand == 'amd':
             # Iterate through the json to get the model name and the TDP
             for model_info in data['data']:
                 # retrieve the model code (identified by digits and alphabetic character) from cpu_name
@@ -93,12 +88,17 @@ def get_cpu_tdp(cpu_name: str) -> float:
                         tdp.append(sum(model_tdp) / len(model_tdp))
                     else:
                         tdp.append(model_tdp[0])
-            assert len(tdp) == 1, 'Found multiple matching TDPs'
-            tdp = tdp[0]
+        elif cpu_brand == 'intel':
+            for model_name, model_tdp in data.items():
+                if my_model_code in model_name:     
+                    tdp.append(model_tdp)
         else:
             raise ValueError('CPU not supported')
-        # save the tdp in a json file
-        with open(json_fname, 'w') as f:
-            json.dump({'tdp': tdp}, f)
+        
+        assert len(tdp) == 1, 'Found multiple matching TDPs'
+        tdp = tdp[0]
+    # save the tdp in a json file
+    with open(json_fname, 'w') as f:
+        json.dump({'tdp': tdp}, f)
     # return the tdp value
-    return tdp
+    return float(tdp)

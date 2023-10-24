@@ -1,0 +1,23 @@
+Functional:
+  cpu_retrieval_time: 1 #seconds
+  cpu_retrieval_time_decrement: 0.05 #seconds
+  co2_emissions_precision: 6 #decimals
+
+Appearance:
+  Window:
+    window_font_size: 30 #pixels
+    plot_position: [0.1, 0.2, 0.85, 0.7] #normalized [left,bottom,width,height]
+  Plot:
+    num_x_points: 200 #points
+    num_x_ticks: 5 #ticks
+    x_unit_measurement: "m" #s:seconds, m:minutes, h:hours
+    y_unit_measurement: "h" #s:seconds, m:minutes, h:hours
+    font_size: 10 #pixels
+    font_weight: 'normal'
+    grid_line_color: '#1f77b4'
+    grid_line_style: '-'
+    grid_line_width: 0.1
+    line_color: '#1560BD'
+    line_alpha: 0.8
+    area_color: '#1f77b4'
+    area_alpha: 0.1
