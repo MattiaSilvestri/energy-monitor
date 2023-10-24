@@ -66,6 +66,7 @@ class PlotWindowApp(QWidget):
         self.plot_area_color = appearance_params["Plot"]["area_color"]
         self.plot_area_alpha = appearance_params["Plot"]["area_alpha"]
         self.thread_running = False
+        self.new_value = 0
 
         # find y unit of measurement multiplier
         match self.y_unit_measurement:
@@ -169,7 +170,8 @@ class PlotWindowApp(QWidget):
         self.thread_running = False
 
     def closeEvent(self, event):
-        print("Shutting Down...")
+        print("Saving results and shutting down...")
+        self.save_log()
         self.thread.quit()
         self.thread.wait()
 
@@ -187,7 +189,8 @@ class PlotWindowApp(QWidget):
         This method update the data points to be plotted and display the new plot.
         """
         # update data to plot
-        y_to_plot = self.y[-self.num_x_points :]
+        self.y = self.y[1:]
+        self.y = np.append(self.y, self.new_value)
 
         # fill area under the line
         if self.ax.collections:

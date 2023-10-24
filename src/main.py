@@ -24,7 +24,7 @@ present in the list.",
         end="\n",
     )
 
-    # Get confirmation from user
+    # Get confirmation from usery
     while True:
         confirm = input("Continute with geolocation? [y/n] ")
 
