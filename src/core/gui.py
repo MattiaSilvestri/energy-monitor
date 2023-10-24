@@ -168,6 +168,11 @@ class PlotWindowApp(QWidget):
         """
         self.thread_running = False
 
+    def closeEvent(self, event):
+        print("Shutting Down...")
+        self.thread.quit()
+        self.thread.wait()
+
     def update_new_value(self, value):
         """
         This method stores the new value to be plotted right after the worker computes it.
@@ -175,8 +180,7 @@ class PlotWindowApp(QWidget):
         :param value: equivalent co2 emission just computed by the worker
         :type value: float
         """
-        new_value = value * self.y_unit_multiplier
-        self.y = np.append(self.y, new_value)
+        self.new_value = value * self.y_unit_multiplier
 
     def update_chart(self):
         """
@@ -319,5 +323,4 @@ if __name__ == "__main__":
     try:
         sys.exit(app.exec_())
     except SystemExit:
-        myApp.save_log()
-        print("Closing Window...")
+        print("Goodbye!")
