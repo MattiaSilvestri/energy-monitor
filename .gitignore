@@ -3,7 +3,7 @@
 *.tar.gz
 **/build
 **/dist
-/data/cpu_tdp.json
+/data
 **/.vscode
 *.egg-info
 /config/secrets.yml

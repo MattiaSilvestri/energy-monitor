@@ -20,7 +20,7 @@ def get_request_co2signal(lon=None, lat=None, countrycode=None):
 
     # Read YAML file
     secrets_file_path = os.path.join(
-        os.path.dirname(__file__).split("src")[0], "config", "secrets.yml"
+        os.path.dirname(__file__).split("energy_monitor")[0], "config", "secrets.yml"
     )
     with open(secrets_file_path, "r") as stream:
         secrets = yaml.safe_load(stream)
@@ -57,7 +57,7 @@ def get_location() -> dict:
     """
     # Read YAML file
     secrets_file_path = os.path.join(
-        os.path.dirname(__file__).split("src")[0], "config", "secrets.yml"
+        os.path.dirname(__file__).split("energy_monitor")[0], "config", "secrets.yml"
     )
     with open(secrets_file_path, "r") as stream:
         secrets = yaml.safe_load(stream)

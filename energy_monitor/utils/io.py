@@ -17,7 +17,9 @@ def safe_read_config(config_file: str) -> dict:
 
     # Extract user absolute path to config file
     path = os.path.dirname(__file__)
-    custom_abs_path = os.path.join(path.split("src")[0], "config", config_file)
+    custom_abs_path = os.path.join(
+        path.split("energy_monitor")[0], "config", config_file
+    )
 
     # Safe load yaml
     with open(custom_abs_path, "r") as stream:
