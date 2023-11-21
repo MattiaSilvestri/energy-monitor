@@ -118,6 +118,15 @@ class PlotWindowApp(QWidget):
             horizontalalignment="right",
         )
         self.ax.set_xlabel(f"Time ({self.x_unit_measurement})")
+        # add question mark to the plot, referring to the README file for explanation about the metric
+        self.annotation = self.ax.annotate(
+            "?",
+            (0.95, 0.9),
+            url="https://github.com/MattiaSilvestri/energy-monitor/blob/main/README.md",
+            xycoords="figure fraction",
+            bbox=dict(boxstyle="round", fc="w"),
+        )
+
         self.line_plot = None
         self.ax.set_position(self.plot_position)
         self.ax.grid(
