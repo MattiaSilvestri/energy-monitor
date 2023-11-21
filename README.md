@@ -8,8 +8,11 @@
 # **Energy-monitor**
 Simple python tool to monitor your personal computer CO<sub>2</sub> emissions. 
 
-Generates a graph displaying the amount of CO<sub>2</sub> emitted by your PC while is running. 
-The amount of CO<sub>2</sub> is computed according to the Thermal Design Power (TDP) of your CPU and adjusted to the carbon impact in your current location.
+Generates a graph displaying the amount of grams of [CO<sub>2</sub>-equivalent](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Carbon_dioxide_equivalent) per unit of time emitted by your PC while is running. <br>
+Essentially, the graph shows the "carbon footprint" of your PC. <br>
+Grams of CO<sub>2</sub>-equivalent/time can be understood as the amount of emissions that the computer would generate if it continued running at the same rate for the specified time. Using a metaphor, is a measure akin to km/h in cars, which indicate the amount of kilometers that would be travelled in one hour if the speed is kept constant. <br>
+
+The amount of grams CO<sub>2</sub>-equivalent is computed according to the [Thermal Design Power (TDP)](https://en.wikipedia.org/wiki/Thermal_design_power) of your CPU and adjusted to the carbon intensity in your current location, a measure of the greenhouse gas emissions associated with producing the electricity you consume. <br>
 
 ## **Table of contents**
 * [Features](#features)
@@ -46,6 +49,12 @@ pip install energy-monitor
 ```
 pip install git@https://github.com/MattiaSilvestri/energy-monitor.git
 ```
+
+After installation, the package needs API keys from the following services:
+* [Co2Signal](https://www.co2signal.com/) (free)
+* [ipgeolocation](https://ipgeolocation.io/) (free)
+These API keys can be obtained for free by registering to the services. <br>
+Once obtained, they need to be stored in ./config/secrets.yml
 
 ## **Example**
 
