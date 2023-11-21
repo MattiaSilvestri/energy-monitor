@@ -9,7 +9,7 @@ import matplotlib
 import numpy as np
 from random import randint
 import datetime
-from utils.io import safe_read_config
+from utils.data import compute_session_cumulative_consumption
 
 
 # Plot Class
@@ -67,6 +67,7 @@ class PlotWindowApp(QWidget):
         self.plot_area_alpha = appearance_params["Plot"]["area_alpha"]
         self.thread_running = False
         self.new_value = 0
+        self.historical_y = 0
 
         # find y unit of measurement multiplier
         match self.y_unit_measurement:
@@ -89,6 +90,7 @@ class PlotWindowApp(QWidget):
         self.create_window()
         self.insert_ax()
         self.connect_timer()
+        self.load_historical_data()
 
     def create_window(self):
         """
@@ -128,6 +130,8 @@ class PlotWindowApp(QWidget):
             linestyle=self.plot_grid_line_style,
             linewidth=self.plot_grid_line_width,
         )
+        self.session_label = self.ax.text(0, 0, "")
+        self.historical_label = self.ax.text(0, 0, "")
 
     def connect_timer(self):
         """
@@ -189,8 +193,39 @@ class PlotWindowApp(QWidget):
         This method update the data points to be plotted and display the new plot.
         """
         # update data to plot
-        self.y = self.y[1:]
+        self.y = self.y[
+            1:
+        ]  # TODO: max session cache is the initial lenght of y, to save more plot data we need to split y_to_save and y_to_plot
         self.y = np.append(self.y, self.new_value)
+
+        # update labels
+        self.session_label.set_position((0.9, self.y.max() * 0.7))
+        self.session_label.set_text(
+            "SESSION\n"
+            + str(
+                round(
+                    compute_session_cumulative_consumption(
+                        self.y, self.x_unit_measurement, self.y_unit_measurement
+                    ),
+                    2,
+                )
+            )
+            + " gCO2eq"
+        )
+        self.historical_label.set_position((0.9, self.y.max() * 0.3))
+        self.historical_label.set_text(
+            "HISTORICAL\n"
+            + str(
+                round(
+                    compute_session_cumulative_consumption(
+                        self.y, self.x_unit_measurement, self.y_unit_measurement
+                    )
+                    + self.historical_y,
+                    2,
+                )
+            )
+            + " gCO2eq"
+        )
 
         # fill area under the line
         if self.ax.collections:
@@ -231,6 +266,27 @@ class PlotWindowApp(QWidget):
         labels = labels_all[np.linspace(0, len(labels_all) - 1, num_ticks).astype(int)]
         labels_ticks = [str(round(element, 1)) for element in list(labels)]
         self.ax.set_xticks(ticks, labels_ticks)
+
+    def load_historical_data(self):
+        """
+        This method loads all the txt data gathered during the previous sessions.
+        """
+        # get current file path
+        current_file_path = Path(os.path.realpath(__file__))
+
+        # get package root path
+        data_path = (
+            current_file_path.parent.absolute().parent.absolute().parent.absolute()
+            / "data"
+            / "userdata"
+        )
+        if data_path.exists():
+            historical_data_files = list(data_path.iterdir())
+            for file in historical_data_files:
+                data = np.loadtxt(str(file))
+                self.historical_y += compute_session_cumulative_consumption(
+                    data, self.x_unit_measurement, self.y_unit_measurement
+                )
 
     def save_log(self):
         """
@@ -300,6 +356,8 @@ class MyDataCollectorWorker(QObject):
 
 # Test the GUI with random numbers generation
 if __name__ == "__main__":
+    from utils.io import safe_read_config
+
     # Read YAML file
     config = safe_read_config("config.yml")
     config_appearence = config["Appearance"]

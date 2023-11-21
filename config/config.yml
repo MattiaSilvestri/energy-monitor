@@ -6,7 +6,7 @@ Functional:
 Appearance:
   Window:
     window_font_size: 30 #pixels
-    plot_position: [0.1, 0.2, 0.85, 0.7] #normalized [left,bottom,width,height]
+    plot_position: [0.1, 0.2, 0.75, 0.7] #normalized [left,bottom,width,height]
   Plot:
     num_x_points: 200 #points
     num_x_ticks: 5 #ticks
