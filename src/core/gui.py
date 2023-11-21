@@ -103,8 +103,13 @@ class PlotWindowApp(QWidget):
         self.ax = self.canvas.figure.subplots()
         self.ax.set_xlim([-self.num_x_points+1, 0])
         self.set_labels_ticks(x_unit_measurement=self.x_unit_measurement, num_ticks=self.num_x_ticks)
-        self.ax.set_ylabel(f"gCOeq \nevery {self.time_interval}{self.y_unit_measurement}", fontsize="small", horizontalalignment="right")
-        self.ax.set_xlabel(f"Time ({self.x_unit_measurement})")
+        self.ax.set_ylabel(f"gCO-eq/{self.time_interval}{self.y_unit_measurement}", fontsize="small", horizontalalignment="right")
+        self.ax.set_xlabel(f"Time ({self.x_unit_measurement})")        
+        # add question mark to the plot, referring to the README file for explanation about the metric
+        self.annotation = self.ax.annotate("?", (.95, .9), 
+                         url="https://github.com/MattiaSilvestri/energy-monitor/blob/main/README.md", 
+                         xycoords='figure fraction', bbox=dict(boxstyle="round", fc="w"))
+
         self.line_plot = None
         self.ax.set_position(self.plot_position)
         self.ax.grid(color=self.plot_grid_line_color, linestyle=self.plot_grid_line_style, linewidth=self.plot_grid_line_width)
