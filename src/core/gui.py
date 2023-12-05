@@ -1,6 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
 from PyQt5.QtCore import QTimer, QObject, QThread, pyqtSignal
+from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtCore import QUrl
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas  # type: ignore
 import matplotlib.pyplot as plt
 import matplotlib
@@ -126,7 +128,7 @@ class PlotWindowApp(QWidget):
             xycoords="figure fraction",
             bbox=dict(boxstyle="round", fc="w"),
         )
-
+        self.canvas.mpl_connect("button_press_event", self.on_click)
         self.line_plot = None
         self.ax.set_position(self.plot_position)
         self.ax.grid(
@@ -134,6 +136,18 @@ class PlotWindowApp(QWidget):
             linestyle=self.plot_grid_line_style,
             linewidth=self.plot_grid_line_width,
         )
+
+    def on_click(self, event):
+        """Open the URL when the annotation is clicked."""
+        # check whether the event occurs inside the annotation
+        contains, _ = self.annotation.contains(event)
+        # if it occurred in the annotation, open the URL
+        if contains:
+            QDesktopServices.openUrl(
+                QUrl(
+                    "https://github.com/MattiaSilvestri/energy-monitor/blob/main/README.md"
+                )
+            )
 
     def connect_timer(self):
         """
