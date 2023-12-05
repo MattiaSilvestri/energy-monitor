@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser(description=help_message)
 def install_config():
     # Get filepath from user
     parser.add_argument(
-        "filename",
+        # "filename",
         metavar="F",
         type=str,
         dest="filename",
@@ -19,14 +19,14 @@ def install_config():
     args = parser.parse_args()
 
     # Define the source path of the config files within your package
-    source_path = "energy_monitor/config"
+    source_path = "./config/config.yml"
 
     # Define the destination path where you want to copy or move the config files on the target system
     destination_path = args.filename
 
     # Copy or move the config files
     try:
-        shutil.copytree(source_path, destination_path)
+        shutil.copyfile(source_path, destination_path)
         print("Config files have been installed successfully.")
     except Exception as e:
         print(f"An error occurred while installing config files: {e}")
