@@ -50,7 +50,7 @@ def get_cpu_tdp(cpu_name: str) -> float:
         os.path.dirname(__file__).split("energy-monitor")[0], "energy-monitor", "data"
     )
     # define file name of the output file
-    json_fname = os.path.join(path, "cpu_tdp.json")
+    json_fname = os.path.join(path, "user_data.json")
     if os.path.isfile(json_fname) and not "pytest" in sys.modules:
         # load json file with the cpu tdp info
         with open(json_fname, "r") as f:
