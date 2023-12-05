@@ -1,6 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
 from PyQt5.QtCore import QTimer, QObject, QThread, pyqtSignal
+from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtCore import QUrl
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas # type: ignore
 import matplotlib.pyplot as plt
 import matplotlib
@@ -105,14 +107,21 @@ class PlotWindowApp(QWidget):
         self.set_labels_ticks(x_unit_measurement=self.x_unit_measurement, num_ticks=self.num_x_ticks)
         self.ax.set_ylabel(f"gCO-eq/{self.time_interval}{self.y_unit_measurement}", fontsize="small", horizontalalignment="right")
         self.ax.set_xlabel(f"Time ({self.x_unit_measurement})")        
-        # add question mark to the plot, referring to the README file for explanation about the metric
-        self.annotation = self.ax.annotate("?", (.95, .9), 
-                         url="https://github.com/MattiaSilvestri/energy-monitor/blob/main/README.md", 
-                         xycoords='figure fraction', bbox=dict(boxstyle="round", fc="w"))
-
+        # add question mark to the plot
+        self.annotation = self.ax.annotate("?", (.95, .9), xycoords='figure fraction', bbox=dict(boxstyle="round", fc="w"))
+        # connect the event (button press) to the canvas
+        self.canvas.mpl_connect('button_press_event', self.on_click)
         self.line_plot = None
         self.ax.set_position(self.plot_position)
         self.ax.grid(color=self.plot_grid_line_color, linestyle=self.plot_grid_line_style, linewidth=self.plot_grid_line_width)
+
+    def on_click(self, event):
+        """Open the URL when the annotation is clicked."""
+        # check whether the event occurs inside the annotation
+        contains, _ = self.annotation.contains(event)
+        # if it occurred in the annotation, open the URL
+        if contains:
+            QDesktopServices.openUrl(QUrl("https://github.com/MattiaSilvestri/energy-monitor/blob/main/README.md"))
 
     def connect_timer(self):
         '''
