@@ -2,6 +2,8 @@
 ![macOS](https://img.shields.io/badge/mac%20os-000000?logo=macos&logoColor=F0F0F0)
 ![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)
 ![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)
+![Workflow](https://github.com/MattiaSilvestri/energy-monitor/actions/workflows/tests.yml/badge.svg)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 ![Logo](./media/energy-monitor-logo.png)
 
@@ -35,7 +37,7 @@ energy-monitor
 ```
 
 The program asks the user to accept using their own current location to determine the carbon impact in the area (based on [Electricity Maps](https://app.electricitymaps.com/map)). <br>
-If the user does not accept, the user will be asked to select from a list the country. <br>
+If the user does not accept, the user will be asked to select from a list the country or region. <br>
 The program will then retrieve the TDP of the CPU. <br>
 A graph will be displayed showing the CO<sub>2</sub> emissions of the PC over time (default resolution: 1 second). <br>
 
@@ -52,7 +54,8 @@ pip install git@https://github.com/MattiaSilvestri/energy-monitor.git
 
 After installation, the package needs API keys from the following services:
 * [Co2Signal](https://www.co2signal.com/) (free)
-* [ipgeolocation](https://ipgeolocation.io/) (free)
+* [ipgeolocation](https://ipgeolocation.io/) (free) <br>
+
 These API keys can be obtained for free by registering to the services. <br>
 Once obtained, they need to be stored in ./config/secrets.yml
 
