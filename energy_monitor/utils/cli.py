@@ -7,6 +7,8 @@ from InquirerPy import get_style
 from itertools import repeat
 import shutil
 import os
+import sys
+import json
 
 help_message = "It collects CO2 emissions data from your country and compare \
 it with your energy consumption to produce an estimate of the CO2 generated \
@@ -100,19 +102,33 @@ def show_list() -> str:
     return country_id
 
 
-def install_config(destination_path: str) -> None:
+def install_config(destination_path) -> None:
     """
     Install config file if not present.
     """
 
+    # Get path to project directory
+    path = os.path.dirname(__file__).split("energy_monitor")[0]
     # Define the source path of the config files within your package
-    source_path = os.path.join(
-        os.path.dirname(__file__).split("energy_monitor")[0], "config"
-    )
+    source_path = os.path.join(path, "energy_monitor", "config", "config.yml")
 
     # Copy or move the config files
     try:
-        shutil.copytree(source_path, destination_path)
+        shutil.copyfile(source_path, destination_path)
         print("Config files have been installed successfully.")
     except Exception as e:
         print(f"An error occurred while installing config files: {e}")
+
+    # Write user path in json file
+    data_path = os.path.join(path, "energy_monitor", "data")
+    # define file name of the output file
+    json_fname = os.path.join(data_path, "user_data.json")
+    if os.path.isfile(json_fname) and not "pytest" in sys.modules:
+        # load json file with the cpu tdp info
+        with open(json_fname, "r") as f:
+            user_data = json.load(f)
+
+        user_data["user_config"] = destination_path
+
+        with open(json_fname, "w") as f:
+            json.dump(user_data, f)
