@@ -1,7 +1,7 @@
 import sys
 import os
 from pathlib import Path
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
 from PyQt5.QtCore import QTimer, QObject, QThread, pyqtSignal
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas  # type: ignore
 import matplotlib.pyplot as plt
@@ -102,6 +102,8 @@ class PlotWindowApp(QWidget):
         fig = plt.Figure(figsize=(15, 3))
         self.canvas = FigureCanvas(fig)
         layout.addWidget(self.canvas)
+        self.label = QLabel("Init Label", self)
+        layout.addWidget(self.label)
 
     def insert_ax(self):
         """
@@ -132,6 +134,12 @@ class PlotWindowApp(QWidget):
         )
         self.session_label = self.ax.text(0, 0, "")
         self.historical_label = self.ax.text(0, 0, "")
+        self.annotation = self.ax.annotate(
+            "Session",
+            (1.2, 0.99),
+            xycoords="axes fraction",
+            bbox=dict(boxstyle="round", fc="w"),
+        )
 
     def connect_timer(self):
         """
