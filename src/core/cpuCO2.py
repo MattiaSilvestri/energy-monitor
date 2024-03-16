@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QApplication
 import sys
 from core.gui import PlotWindowApp
 from utils.io import safe_read_config
-import os
 
 # Read YAML file
 config = safe_read_config("config.yml")
@@ -31,7 +30,7 @@ def cpu_co2(country_code=None) -> None:
                 "\nco2data for your location could not be retrieved."
                 "\nPlease try again later or specify a country code"
             )
-            os._exit(1)
+            sys.exit(1)
         country_code = co2data["countryCode"]
 
     try:
