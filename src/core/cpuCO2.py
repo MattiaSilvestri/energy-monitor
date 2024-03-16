@@ -83,6 +83,7 @@ def cpu_co2(country_code=None) -> None:
             f"\n{str(e)}"
             f"\nIf the error persists, report it to the developers opening an issue on github:"
             f"\nhttps://github.com/MattiaSilvestri/energy-monitor/issues"
+        )
 
 
 def combine_cpu_CO2(
