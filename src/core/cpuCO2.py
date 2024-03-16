@@ -75,14 +75,14 @@ def cpu_co2(country_code=None) -> None:
         try:
             sys.exit(app.exec_())
         except SystemExit:
-            print("Closing Window...")
+            print("Goodbye!")
+
     except Exception as e:
         print(
             f"Sorry, an error occurred: "
             f"\n{str(e)}"
             f"\nIf the error persists, report it to the developers opening an issue on github:"
             f"\nhttps://github.com/MattiaSilvestri/energy-monitor/issues"
-        )
 
 
 def combine_cpu_CO2(
