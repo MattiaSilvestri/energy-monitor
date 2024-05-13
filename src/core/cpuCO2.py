@@ -23,7 +23,14 @@ def cpu_co2(country_code=None) -> None:
         lat = geolocation["latitude"]
 
         # Retrieve data from Co2Signal API
-        co2data = api_calls.get_request_co2signal(lon, lat)
+        try:
+            co2data = api_calls.get_request_co2signal(lon=lon, lat=lat)
+        except Exception as e:
+            print(
+                "\nco2data for your location could not be retrieved."
+                "\nPlease try again later or specify a country code"
+            )
+            sys.exit(1)
         country_code = co2data["countryCode"]
 
     try:
@@ -69,10 +76,12 @@ def cpu_co2(country_code=None) -> None:
         except SystemExit:
             print("Goodbye!")
 
-    except KeyError:
+    except Exception as e:
         print(
-            "Sorry, your country is not present in the Electricity Map "
-            + "database, it is therefore not possible to retrieve CO2 emissions data."
+            f"Sorry, an error occurred: "
+            f"\n{str(e)}"
+            f"\nIf the error persists, report it to the developers opening an issue on github:"
+            f"\nhttps://github.com/MattiaSilvestri/energy-monitor/issues"
         )
 
 
