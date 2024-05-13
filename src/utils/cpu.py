@@ -13,12 +13,12 @@ def get_cpu_info() -> str:
     :return: Info regarding CPU model installed
     :rtype: str
     """
-
     try:
         cpu_info = cpuinfo.get_cpu_info()["brand_raw"]
-    except:
-        cpu_info= "CPU Info not available"
-        
+    except Exception as e:
+        print("Error retrieving CPU info. Stopping execution.")
+        sys.exit(1)
+                
     return cpu_info
 
 
