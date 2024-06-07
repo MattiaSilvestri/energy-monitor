@@ -16,7 +16,7 @@ inquirerpy==0.3.4
 kiwisolver==1.4.4
 matplotlib==3.7.1
 mypy==1.4.0
-numpy==1.24.1
+numpy==1.26.4
 outcome==1.2.0
 packaging==23.0
 pfzy==0.3.4
