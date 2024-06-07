@@ -166,6 +166,11 @@ class PlotWindowApp(QWidget):
         """
         self.thread_running = False
 
+    def closeEvent(self, event):
+        print("Shutting Down...")
+        self.thread.quit()
+        self.thread.wait()
+
     def update_new_value(self, value):
         """
         This method stores the new value to be plotted right after the worker computes it.
@@ -290,4 +295,4 @@ if __name__ == "__main__":
     try:
         sys.exit(app.exec_())
     except SystemExit:
-        print("Closing Window...")
+        print("Goodbye!")
