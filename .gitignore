@@ -2,7 +2,6 @@
 **/bin
 *.tar.gz
 **/build
-**/dist
 /data
 **/.vscode
 *.egg-info
