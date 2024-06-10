@@ -1,6 +1,5 @@
 **/__pycache__
 **/bin
-*.tar.gz
 **/build
 /data
 **/.vscode
