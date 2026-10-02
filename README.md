@@ -43,11 +43,7 @@ A graph will be displayed showing the CO<sub>2</sub> emissions of the PC over ti
 
 
 ## **Installation**
-### Option 1: From PyPI
-```
-pip install energy-monitor
-```
-### Option 2: From source
+### From source
 ```
 pip install git@https://github.com/MattiaSilvestri/energy-monitor.git
 ```
