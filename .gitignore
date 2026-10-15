@@ -1,3 +1,7 @@
 **/__pycache__
-/data/cpu_tdp.json
+**/bin
+**/build
+/data
+**/.vscode
+*.egg-info
 /config/secrets.yml

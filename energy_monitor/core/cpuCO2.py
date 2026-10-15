@@ -1,8 +1,8 @@
-from utils import api_calls, cpu
+from energy_monitor.utils import api_calls, cpu
 from PyQt5.QtWidgets import QApplication
 import sys
-from core.gui import PlotWindowApp
-from utils.io import safe_read_config
+from energy_monitor.core.gui import PlotWindowApp
+from energy_monitor.utils.io import safe_read_config
 
 # Read YAML file
 config = safe_read_config("config.yml")

@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling>=1.7.0", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
+[project]
+name = "energy_monitor"
+version = "0.0.1"
+authors = [
+  { name="Mattia Silvestri", email="mattiasilvestri27@gmail.com" },
+  { name="Francesco Romandini", email="francescoromandini@gmail.com" },
+  { name="Giuliano Giari", email="giuliano.giari@gmail.com" },
+  ]
+description = "Energy monitor"
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = [
+  "energy",
+  "monitor",
+  "monitoring",
+  "co2",
+  "consumption"
+]
+license = {text = "GPLv3"}
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+dynamic = ["dependencies"]
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]
+
+# [tool.hatch.build.targets.wheel.force-include]
+# "config" = "energy_monitor/config"
+
+[project.scripts]
+energy-monitor = "energy_monitor.main:main"
