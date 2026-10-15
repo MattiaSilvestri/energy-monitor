@@ -25,26 +25,49 @@ def get_request_co2signal(lon=None, lat=None, countrycode=None):
     with open(secrets_file_path, "r") as stream:
         secrets = yaml.safe_load(stream)
 
-    # Initialize the request
-    url = "https://api.co2signal.com/v1/latest"
+    # Initialize the request (CO2 Signal has been merged into Electricity Maps)
+    base_url = "https://api.electricitymaps.com/v3"
     headers = {"auth-token": secrets["API_keys"]["co2signal"]}
 
     if countrycode:
         if not isinstance(countrycode, str):
             raise ValueError("Country code must be a string")
         # get the list of countries
-        req = requests.get("https://api.electricitymap.org/v3/zones")
+        req = requests.get(f"{base_url}/zones")
         # Display country list
         code_list = [k for k in req.json()]
         if not countrycode in code_list:
             raise ValueError("Country code not found")
-        params = {"countryCode": countrycode}
+        params = {"zone": countrycode}
     else:
         params = {"lon": lon, "lat": lat}
 
-    # Perform the API call
-    req = requests.get(url, headers=headers, params=params)
-    return req.json()
+    # Perform the API calls
+    intensity = requests.get(
+        f"{base_url}/carbon-intensity/latest", headers=headers, params=params
+    )
+    intensity.raise_for_status()
+    breakdown = requests.get(
+        f"{base_url}/power-breakdown/latest", headers=headers, params=params
+    )
+    breakdown.raise_for_status()
+    intensity_data = intensity.json()
+    breakdown_data = breakdown.json()
+
+    fossil_free = breakdown_data.get("fossilFreePercentage")
+    fossil_percentage = None if fossil_free is None else float(100 - fossil_free)
+
+    # Keep the response format of the legacy co2signal API
+    return {
+        "status": "ok",
+        "countryCode": intensity_data["zone"],
+        "data": {
+            "datetime": intensity_data["datetime"],
+            "carbonIntensity": intensity_data["carbonIntensity"],
+            "fossilFuelPercentage": fossil_percentage,
+        },
+        "units": {"carbonIntensity": "gCO2eq/kWh"},
+    }
 
 
 def get_location() -> dict:
