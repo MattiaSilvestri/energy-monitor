@@ -8,6 +8,8 @@ from itertools import repeat
 import shutil
 import os
 import sys
+from typing import List
+from urllib.parse import quote_plus
 
 from energy_monitor.utils.api_calls import save_api_keys
 from energy_monitor.utils.paths import DEFAULT_CONFIG, secrets_file, update_user_data
@@ -16,6 +18,16 @@ help_message = "It collects CO2 emissions data from your country and compare \
 it with your energy consumption to produce an estimate of the CO2 generated \
 by your computer."
 parser = argparse.ArgumentParser(description=help_message)
+
+
+def positive_float(value: str) -> float:
+    try:
+        number = float(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"'{value}' is not a number")
+    if number <= 0:
+        raise argparse.ArgumentTypeError("the value must be greater than 0")
+    return number
 
 
 def get_args() -> argparse.Namespace:
@@ -49,6 +61,14 @@ def get_args() -> argparse.Namespace:
         dest="set_keys",
         action="store_true",
         help="Store the Electricity Maps and ipgeolocation API keys",
+    )
+    parser.add_argument(
+        "-t",
+        "--set-tdp",
+        dest="tdp",
+        type=positive_float,
+        metavar="WATTS",
+        help="Manually set the TDP of your CPU in watts",
     )
     args = parser.parse_args()
     return args
@@ -132,6 +152,56 @@ def install_config(destination_path) -> None:
     # Remember the user config path
     if not "pytest" in sys.modules:
         update_user_data(user_config=destination_path)
+
+
+def ask_cpu_tdp(cpu_name: str, reason: str, candidates: List[float]) -> float:
+    """
+    Ask the user for the TDP of their CPU, when it cannot be found in the database.
+
+    :param cpu_name: CPU name, coming from get_cpu_info()
+    :param reason: why the TDP could not be found automatically
+    :param candidates: possible TDP values found in the database, if any
+    :return: CPU Thermal Design Power (TDP) in watts
+    :rtype: float
+    """
+    print(
+        f"\n{reason}.\n"
+        "The TDP (Thermal Design Power) is listed in the CPU specifications on the "
+        "manufacturer website, for example:\n"
+        f"https://duckduckgo.com/?q={quote_plus(cpu_name + ' TDP')}\n"
+        "It will be saved, you can change it later with 'energy-monitor --set-tdp WATTS'."
+    )
+
+    manual = "Type it manually"
+    if candidates:
+        choice = inquirer.select(
+            message="Select the TDP of your CPU:",
+            choices=[f"{c:g} W" for c in candidates] + [manual],
+        ).execute()
+        if choice != manual:
+            return float(choice.split()[0])
+
+    tdp = inquirer.text(
+        message="TDP of your CPU in watts:",
+        validate=lambda v: _is_positive_float(v),
+        invalid_message="Please type a number greater than 0 (e.g. 15)",
+    ).execute()
+    return float(tdp)
+
+
+def _is_positive_float(value: str) -> bool:
+    try:
+        return float(value) > 0
+    except ValueError:
+        return False
+
+
+def set_tdp(tdp: float) -> None:
+    """
+    Save the TDP of the CPU set manually by the user.
+    """
+    update_user_data(tdp=tdp)
+    print(f"CPU TDP set to {tdp:g} W")
 
 
 def set_api_keys() -> None:

@@ -13,6 +13,9 @@ def main():
         # Install custom config file
         cli.install_config(args.filename)
         return
+    if args.tdp:
+        cli.set_tdp(args.tdp)
+        return
 
     # Imported here so that the config is read only when the app is launched
     from energy_monitor.core.cpuCO2 import cpu_co2
