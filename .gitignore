@@ -1,3 +1,10 @@
 **/__pycache__
-/data/cpu_tdp.json
-/config/secrets.yml
+**/bin
+**/build
+/dist
+/data
+**/.vscode
+*.egg-info
+.venv
+secrets.yml
+energy_monitor/data/user_data.json

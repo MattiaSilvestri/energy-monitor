@@ -2,9 +2,7 @@ import os
 import sys
 import pytest
 
-# add src to path to be able to run the tests
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__name__), "src")))
-from utils.api_calls import get_location, get_request_co2signal
+from energy_monitor.utils.api_calls import get_location, get_request_co2signal
 
 
 @pytest.mark.skip(reason="Secret API Keys")

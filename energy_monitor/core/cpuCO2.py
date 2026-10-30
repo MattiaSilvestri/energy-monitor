@@ -1,11 +1,11 @@
-from utils import api_calls, cpu
+from energy_monitor.utils import api_calls, cpu
 from PyQt5.QtWidgets import QApplication
 import sys
-from core.gui import PlotWindowApp
-from utils.io import safe_read_config
+from energy_monitor.core.gui import PlotWindowApp
+from energy_monitor.utils.io import safe_read_config
 
 # Read YAML file
-config = safe_read_config("config.yml")
+config = safe_read_config()
 config_appearence = config["Appearance"]
 
 
@@ -51,6 +51,8 @@ def cpu_co2(country_code=None) -> None:
         # print(config_file.Functional.cpu_retrieval_time)
         cpu_info = cpu.get_cpu_info()
         print("- Current CPU: {0}".format(cpu_info))
+        cpu_tdp = cpu.get_cpu_tdp(cpu_info)
+        print("- CPU TDP: {0:g} W".format(cpu_tdp))
 
         # Launch plot
         app = QApplication(sys.argv)
@@ -63,7 +65,7 @@ def cpu_co2(country_code=None) -> None:
         )
         app.setStyleSheet(qwidget_params)
         myApp = PlotWindowApp(
-            cpu.get_cpu_tdp(cpu_info),
+            cpu_tdp,
             carbon_intensity,
             cpu_retrieval_time,
             get_interval_emissions,
