@@ -1,26 +1,21 @@
-import os
 import yaml
 import re
 import sys
 from typing import Callable
 
+from energy_monitor.utils.paths import user_config_file
 
-def safe_read_config(config_file: str) -> dict:
+
+def safe_read_config() -> dict:
     """
-    Read the content of the specified config file starting from any path. Then check if the values contained in the configuration file are consistent with the application.
+    Read the user config file (installed with --install-config) or the default one. Then check if the values contained in the configuration file are consistent with the application.
 
-    :param config_file: filename of the .yml config file to read
-    :type config_file: str
     :return: configuration file dictionary
     :rtype: dict
     """
 
-    # Extract user absolute path to config file
-    path = os.path.dirname(__file__)
-    custom_abs_path = os.path.join(path.split("utils")[0], "config", config_file)
-
     # Safe load yaml
-    with open(custom_abs_path, "r") as stream:
+    with user_config_file().open("r") as stream:
         config_dict = yaml.safe_load(stream)
 
     errors = is_config_safe(config_dict)

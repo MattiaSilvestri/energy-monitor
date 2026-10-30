@@ -1,4 +1,3 @@
-from energy_monitor.core.cpuCO2 import cpu_co2
 from energy_monitor.utils import cli
 
 
@@ -6,6 +5,17 @@ def main():
     # Script for launching the app
 
     args = cli.get_args()
+
+    if args.set_keys:
+        cli.set_api_keys()
+        return
+    if args.filename:
+        # Install custom config file
+        cli.install_config(args.filename)
+        return
+
+    # Imported here so that the config is read only when the app is launched
+    from energy_monitor.core.cpuCO2 import cpu_co2
 
     if args.list:
         # Display country list if requested
@@ -15,9 +25,6 @@ def main():
         # Launch main with manual country selection
         country_code = args.country
         cpu_co2(country_code=country_code)
-    elif args.filename:
-        # Install custom config file
-        cli.install_config(args.filename)
     else:
         # Disclaimer message
         print(

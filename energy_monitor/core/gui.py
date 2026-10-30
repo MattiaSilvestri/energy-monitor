@@ -293,7 +293,7 @@ class MyDataCollectorWorker(QObject):
 # Test the GUI with random numbers generation
 if __name__ == "__main__":
     # Read YAML file
-    config = safe_read_config("config.yml")
+    config = safe_read_config()
     config_appearence = config["Appearance"]
 
     app = QApplication(sys.argv)

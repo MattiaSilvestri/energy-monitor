@@ -43,17 +43,32 @@ A graph will be displayed showing the CO<sub>2</sub> emissions of the PC over ti
 
 
 ## **Installation**
-### From source
+### With uv (recommended)
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then:
 ```
-pip install git@https://github.com/MattiaSilvestri/energy-monitor.git
+uv tool install git+https://github.com/MattiaSilvestri/energy-monitor@binary
 ```
+This installs the `energy-monitor` command in an isolated environment. <br>
+Update it with `uv tool upgrade energy-monitor` and remove it with `uv tool uninstall energy-monitor`.
 
-After installation, the package needs API keys from the following services:
-* [Co2Signal](https://www.co2signal.com/) (free)
-* [ipgeolocation](https://ipgeolocation.io/) (free) <br>
+### API keys
+The app needs API keys from the following services:
+* [Electricity Maps](https://portal.electricitymaps.com/) (formerly Co2Signal, free)
+* [ipgeolocation](https://ipgeolocation.io/) (free, only needed for automatic geolocation) <br>
 
 These API keys can be obtained for free by registering to the services. <br>
-Once obtained, they need to be stored in ./config/secrets.yml
+Once obtained, store them with:
+```
+energy-monitor --set-api-keys
+```
+The keys are saved in your user config folder (e.g. `~/.config/energy-monitor/secrets.yml` on Linux). <br>
+Alternatively, set the `ELECTRICITYMAPS_API_KEY` and `IPGEOLOCATION_API_KEY` environment variables.
+
+### Custom configuration
+To customize the plot appearance, generate a copy of the default config file and edit it:
+```
+energy-monitor --install-config ~/energy-monitor-config.yml
+```
 
 ## **Example**
 

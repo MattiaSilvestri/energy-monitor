@@ -7,6 +7,8 @@ import re
 import requests
 import time
 
+from energy_monitor.utils.paths import cpu_database_file
+
 
 def get_carbon_intensity(html):
     """
@@ -107,10 +109,6 @@ def _create_intel_database():
                         # break the loop over specs, to speed up the process
                         break
     # save the dictionary in a json file
-    # get the path to the data folder
-    path = os.path.join(
-        os.path.dirname(__file__).split("energy-monitor")[0], "energy-monitor", "data"
-    )
-    fname = os.path.join(path, "database_intel.json")
+    fname = cpu_database_file("intel")
     with open(fname, "w") as f:
         json.dump(intel_database, f)

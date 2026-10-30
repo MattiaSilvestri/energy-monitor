@@ -1,7 +1,10 @@
 **/__pycache__
 **/bin
 **/build
+/dist
 /data
 **/.vscode
 *.egg-info
-/config/secrets.yml
+.venv
+secrets.yml
+energy_monitor/data/user_data.json

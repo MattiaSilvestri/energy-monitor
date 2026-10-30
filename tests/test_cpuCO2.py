@@ -1,9 +1,7 @@
 import os
 import sys
 import pytest
-# add src to path to be able to run the tests
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__name__), 'src')))
-from core.cpuCO2 import combine_cpu_CO2, get_interval_emissions
+from energy_monitor.core.cpuCO2 import combine_cpu_CO2, get_interval_emissions
 
 
 def test_combine_cpu_CO2():

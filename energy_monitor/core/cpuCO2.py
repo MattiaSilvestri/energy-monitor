@@ -5,7 +5,7 @@ from energy_monitor.core.gui import PlotWindowApp
 from energy_monitor.utils.io import safe_read_config
 
 # Read YAML file
-config = safe_read_config("config.yml")
+config = safe_read_config()
 config_appearence = config["Appearance"]
 
 

@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - binary
   pull_request:
     branches:
       - main
@@ -14,14 +15,12 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.10.8'
+    - uses: actions/checkout@v4
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v6
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: uv sync --python 3.12
     - name: Run tests
-      run: pytest
+      run: uv run pytest
     - name: Run mypy
-      run: mypy src/
+      run: uv run mypy energy_monitor

@@ -8,7 +8,9 @@ from itertools import repeat
 import shutil
 import os
 import sys
-import json
+
+from energy_monitor.utils.api_calls import save_api_keys
+from energy_monitor.utils.paths import DEFAULT_CONFIG, secrets_file, update_user_data
 
 help_message = "It collects CO2 emissions data from your country and compare \
 it with your energy consumption to produce an estimate of the CO2 generated \
@@ -39,7 +41,14 @@ def get_args() -> argparse.Namespace:
         "--install-config",
         dest="filename",
         type=str,
-        help="Generate copy of default config in the specified folder",
+        help="Generate copy of default config at the specified path and use it",
+    )
+    parser.add_argument(
+        "-k",
+        "--set-api-keys",
+        dest="set_keys",
+        action="store_true",
+        help="Store the Electricity Maps and ipgeolocation API keys",
     )
     args = parser.parse_args()
     return args
@@ -107,28 +116,37 @@ def install_config(destination_path) -> None:
     Install config file if not present.
     """
 
-    # Get path to project directory
-    path = os.path.dirname(__file__).split("energy_monitor")[0]
-    # Define the source path of the config files within your package
-    source_path = os.path.join(path, "energy_monitor", "config", "config.yml")
+    destination_path = os.path.abspath(os.path.expanduser(destination_path))
+    if os.path.isdir(destination_path):
+        destination_path = os.path.join(destination_path, "config.yml")
 
-    # Copy or move the config files
+    # Copy the default config shipped with the package
     try:
-        shutil.copyfile(source_path, destination_path)
-        print("Config files have been installed successfully.")
+        with DEFAULT_CONFIG.open("rb") as src, open(destination_path, "wb") as dst:
+            shutil.copyfileobj(src, dst)
+        print(f"Config file has been installed successfully in {destination_path}")
     except Exception as e:
         print(f"An error occurred while installing config files: {e}")
+        return
 
-    # Write user path in json file
-    data_path = os.path.join(path, "energy_monitor", "data")
-    # define file name of the output file
-    json_fname = os.path.join(data_path, "user_data.json")
-    if os.path.isfile(json_fname) and not "pytest" in sys.modules:
-        # load json file with the cpu tdp info
-        with open(json_fname, "r") as f:
-            user_data = json.load(f)
+    # Remember the user config path
+    if not "pytest" in sys.modules:
+        update_user_data(user_config=destination_path)
 
-        user_data["user_config"] = destination_path
 
-        with open(json_fname, "w") as f:
-            json.dump(user_data, f)
+def set_api_keys() -> None:
+    """
+    Ask the user for the API keys and store them in the user secrets file.
+    """
+    print(
+        "Get your free API keys at:\n"
+        "- Electricity Maps: https://portal.electricitymaps.com/\n"
+        "- ipgeolocation:    https://ipgeolocation.io/\n"
+        "Leave a field empty to keep the current value."
+    )
+    keys = {
+        "co2signal": inquirer.secret(message="Electricity Maps API key:").execute(),
+        "ipgeolocation": inquirer.secret(message="ipgeolocation API key:").execute(),
+    }
+    save_api_keys({k: v.strip() for k, v in keys.items()})
+    print(f"API keys saved in {secrets_file()}")

@@ -1,10 +1,15 @@
 import cpuinfo  # type: ignore
 import json
-import os
 import psutil
 import re
 import sys
 
+from energy_monitor.utils.paths import (
+    bundled_cpu_database,
+    cpu_database_file,
+    load_user_data,
+    update_user_data,
+)
 from energy_monitor.utils.scraping import get_cpu_database
 
 
@@ -45,28 +50,25 @@ def get_cpu_tdp(cpu_name: str) -> float:
     :return: CPU Thermal Design Power (TDP) in watts
     :rtype: float
     """
-    # get the path to the data folder
-    path = os.path.join(
-        os.path.dirname(__file__).split("energy-monitor")[0], "energy-monitor", "data"
-    )
-    # define file name of the output file
-    json_fname = os.path.join(path, "user_data.json")
-    if os.path.isfile(json_fname) and not "pytest" in sys.modules:
-        # load json file with the cpu tdp info
-        with open(json_fname, "r") as f:
-            tdp = json.load(f)["tdp"]
+    # load the cached cpu tdp info, if any
+    user_data = load_user_data()
+    if "tdp" in user_data and not "pytest" in sys.modules:
+        tdp = user_data["tdp"]
     else:
         # get the brand of the CPU of this computer
         cpu_brand = "intel" if "Intel" in cpu_name else "amd"
-        # use the json file stored in the data folder to retrieve the TDP
-        database_fname = os.path.join(path, f"database_{cpu_brand}.json")
-        print(database_fname)
-        if not os.path.isfile(database_fname):
+        # use the database downloaded by the user, then the one shipped with the package
+        database_fname = cpu_database_file(cpu_brand)
+        bundled_fname = bundled_cpu_database(cpu_brand)
+        if database_fname.is_file():
+            with open(database_fname, "r") as f:
+                data = json.load(f)
+        elif bundled_fname.is_file():
+            with bundled_fname.open("r") as f:
+                data = json.load(f)
+        else:
             # download it from our github repository
             data = get_cpu_database(database_fname, cpu_brand)
-        else:
-            # returns JSON object as a dictionary
-            data = json.load(open(database_fname))
         # retrieve the model code (identified by digits and alphabetic character) from cpu_name
         my_model_code = re.findall(r"\d+\w+", cpu_name)[0]
         # initialize the list of TDPs. this is to account for multiple potential matches
@@ -103,10 +105,13 @@ def get_cpu_tdp(cpu_name: str) -> float:
         else:
             raise ValueError("CPU not supported")
 
-        assert len(tdp) == 1, "Found multiple matching TDPs"
+        tdp = list(set(tdp))
+        if not tdp:
+            raise ValueError(f"TDP not found in the database for CPU '{cpu_name}'")
+        if len(tdp) > 1:
+            raise ValueError(f"Found multiple matching TDPs for CPU '{cpu_name}': {tdp}")
         tdp = tdp[0]
-    # save the tdp in a json file
-    with open(json_fname, "w") as f:
-        json.dump({"tdp": tdp}, f)
+    # save the tdp in the user data file
+    update_user_data(tdp=tdp)
     # return the tdp value
     return float(tdp)
